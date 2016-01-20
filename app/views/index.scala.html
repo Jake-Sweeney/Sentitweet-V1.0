@@ -1,7 +1,29 @@
-@(message: String)
+@import model.Tweet
+@(tweets: List[Tweet], searchForm: Form[String])(implicit messages: Messages)
 
-@main("Welcome to Play") {
+@import helper._
+@main("SentiTweet") {
 
-    @play20.welcome(message)
+    @form(routes.Application.queryUserSearch()){
+        @inputText(searchForm(""))
+        <input type="submit" id="searchForm">
+    }
+
+    <script type="text/javascript">
+        var searchFormValue= document.getElementById("searchForm").value;
+        document.getElementById('formValue').innerHTML = searchFormValue;
+    </script>
+
+    <h4>Results for <p id="formValue"></p>:</h4>
+
+    <table border="1">
+        @for(tweet <- tweets) {
+            <tr>
+                <td>@tweet.getUserName</td>
+                <td>@tweet.getTimeCreated</td>
+                <td>@tweet.getText</td>
+            </tr>
+        }
+    </table>
 
 }

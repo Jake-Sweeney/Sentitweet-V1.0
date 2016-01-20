@@ -10,7 +10,13 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  specs2 % Test
+  specs2 % Test,
+  "org.twitter4j" % "twitter4j-core" % "4.0.4",
+  "org.twitter4j" % "twitter4j-stream" % "4.0.4",
+  "org.twitter4j" % "twitter4j-async" % "4.0.4",
+  "org.twitter4j" % "twitter4j-media-support" % "4.0.4",
+  "com.typesafe.play" %% "anorm" % "2.4.0",
+  "mysql" % "mysql-connector-java" % "5.1.21"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
