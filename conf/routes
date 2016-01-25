@@ -11,3 +11,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /tweets                           controllers.Application.listResults
 
 POST    /tweets                           controllers.Application.queryUserSearch
+
+GET     /savedResults                     controllers.Application.saveSearchResults

@@ -11,24 +11,30 @@ import play.api.mvc._
 
 class Application @Inject() (val messagesApi : MessagesApi) extends Controller with I18nSupport {
 
+  var userSearchQuery = ""
   val searchForm = Form("userQuery" -> nonEmptyText)
 
   def index() = listResults
 
   def listResults() = Action {
-    Ok(views.html.index(TweetDB.getTweets(), searchForm))
+    Ok(views.html.index(QueryController.searchResults, searchForm))
   }
 
   def queryUserSearch() = Action { implicit request =>
     searchForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(TweetDB.getTweets(), errors)),
+      errors => BadRequest(views.html.index(QueryController.searchResults, errors)),
       userQuery => {
-        val tweets = QueryController.searchForTweets(userQuery)
-        TweetDB.saveResults(tweets)
+        userSearchQuery = userQuery
+        QueryController.searchForTweets(userQuery)
         Redirect(routes.Application.listResults)
       }
     )
   }
 
-
+  def saveSearchResults() = Action { implicit request =>
+    //call create table using the query and curdate.
+    println(f"In the saveSearchResults method. ${QueryController.searchResults.size}%d")
+    TweetDB.saveResults(QueryController.searchResults)
+    Redirect(routes.Application.listResults())
+  }
 }

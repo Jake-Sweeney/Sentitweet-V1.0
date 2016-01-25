@@ -1,29 +1,26 @@
-@import model.Tweet
-@(tweets: List[Tweet], searchForm: Form[String])(implicit messages: Messages)
+@import twitter4j.Status
+@(tweets: List[Status], searchForm: Form[String])(implicit messages: Messages)
 
 @import helper._
 @main("SentiTweet") {
 
     @form(routes.Application.queryUserSearch()){
-        @inputText(searchForm(""))
-        <input type="submit" id="searchForm">
+        @inputText(searchForm("userQuery"))
+        <input type="submit" value="Search" align="center" >
     }
 
-    <script type="text/javascript">
-        var searchFormValue= document.getElementById("searchForm").value;
-        document.getElementById('formValue').innerHTML = searchFormValue;
-    </script>
+    @form(routes.Application.saveSearchResults()) {
+        <input type="submit" value="Save Your Results"/>
+    }
 
-    <h4>Results for <p id="formValue"></p>:</h4>
-
+    <p>Search returned @tweets.size results.</p>
     <table border="1">
         @for(tweet <- tweets) {
             <tr>
-                <td>@tweet.getUserName</td>
-                <td>@tweet.getTimeCreated</td>
+                <td>@tweet.getUser.getScreenName</td>
+                <td>@tweet.getCreatedAt.toString</td>
                 <td>@tweet.getText</td>
             </tr>
         }
     </table>
-
 }

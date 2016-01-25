@@ -11,11 +11,13 @@ object QueryController extends TwitterInstance {
 
   var querySize = 40
   var batchSearch: Boolean = false
+  var searchResults = List[Status]()
 
-  def searchForTweets(userQuery: String) = {
+  def searchForTweets(userQuery: String): List[Status] = {
     val query = new Query(userQuery)
     query.setCount(querySize)
-    val searchResults: List[Status] = twitter.search(query).getTweets.toList
+    searchResults = twitter.search(query).getTweets.toList
+    println(f"Query returned ${searchResults.size}%d results.")
     searchResults
   }
 
