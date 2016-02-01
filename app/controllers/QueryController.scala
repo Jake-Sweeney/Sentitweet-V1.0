@@ -1,6 +1,7 @@
 package controllers
 
-import twitter4j.{Query, Status}
+import model.Tweet
+import twitter4j.Query
 
 import scala.collection.JavaConversions._
 
@@ -9,25 +10,33 @@ import scala.collection.JavaConversions._
   */
 object QueryController extends TwitterInstance {
 
-  var querySize = 40
+  var querySize = 15
   var batchSearch: Boolean = false
-  var searchResults = List[Status]()
+  private var tweets = List[Tweet]()
 
-  def searchForTweets(userQuery: String): List[Status] = {
+  def searchForTweets(userQuery: String): List[Tweet] = {
     val query = new Query(userQuery)
     query.setCount(querySize)
-    searchResults = twitter.search(query).getTweets.toList
+    val searchResults = twitter.search(query).getTweets.toList
+
     println(f"Query returned ${searchResults.size}%d results.")
-    searchResults
+
+    tweets = for (status <- searchResults) yield new Tweet(
+      status.getId, status.getUser.getScreenName, status.getCreatedAt.toString, status.getText,
+      status.getFavoriteCount, status.getRetweetCount
+    )
+    tweets
   }
 
   //The batchSearch flag is for larger queries later.
   //Possibly have radio buttons instead to have more control over the amounts selected.
-  //e.g. seach amount = O 30 | O 50 | O 100 | O 150
+  //e.g. search amount = O 30 | O 50 | O 100 | O 150
   def querySize_(size: Int) = {
     if (size > 100) {
       batchSearch = true
       querySize = size
     } else querySize = size
   }
+
+  def getResults: List[Tweet] = tweets
 }

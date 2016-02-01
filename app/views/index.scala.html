@@ -1,12 +1,16 @@
-@import twitter4j.Status
-@(tweets: List[Status], searchForm: Form[String])(implicit messages: Messages)
+@import model.Tweet
+@(tweets: List[Tweet], searchForm: Form[String])(implicit messages: Messages)
 
 @import helper._
 @main("SentiTweet") {
 
     @form(routes.Application.queryUserSearch()){
         @inputText(searchForm("userQuery"))
-        <input type="submit" value="Search" align="center" >
+        <input type="submit" value="Search" align="right" >
+    }
+
+    @form(routes.Application.graphButtonClicked()) {
+        <input type="submit" id="graphButton" value="Graph Results"/>
     }
 
     @form(routes.Application.saveSearchResults()) {
@@ -17,9 +21,9 @@
     <table border="1">
         @for(tweet <- tweets) {
             <tr>
-                <td>@tweet.getUser.getScreenName</td>
-                <td>@tweet.getCreatedAt.toString</td>
-                <td>@tweet.getText</td>
+                <td>@tweet.username</td>
+                <td>@tweet.date</td>
+                <td>@tweet.text</td>
             </tr>
         }
     </table>

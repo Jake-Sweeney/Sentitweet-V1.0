@@ -29,21 +29,20 @@ object TweetDB {
       */
   }
 
-  def saveResults(tweets: List[Status]) = {
+  /**
+    * TODO Change this to have vals instead of 3 method calls for the data.
+    */
+  def saveResults(tweets: List[Tweet]) = {
     for (tweet <- tweets) {
-      val tweetID = tweet.getId.toString
-      val tweetUserName = tweet.getUser.getScreenName
-      val tweetTime = tweet.getCreatedAt.toString
-      val tweetText = tweet.getText
-      println(f"$tweetID, $tweetUserName, $tweetTime, $tweetText")
+      println(f"${tweet.id}, ${tweet.username}, ${tweet.date}, ${tweet.text}")
       DB.withConnection { implicit connection =>
         try {
           val rowsChanged =
             SQL("INSERT INTO tweet VALUES (DEFAULT,{tweetID},{tweetUserName},{tweetTime},{tweetText})")
-              .on('tweetID -> tweetID, 'tweetUserName -> tweetUserName,
-                'tweetTime -> tweetTime, 'tweetText -> tweetText)
+              .on('tweetID -> tweet.id.toString, 'tweetUserName -> tweet.username,
+                'tweetTime -> tweet.date, 'tweetText -> tweet.text)
               .executeUpdate()
-          println(f"Inserted Tweet:$tweetID%s into table.")
+          println(f"Inserted Tweet:${tweet.id}%s into table.")
         } catch {
           case e: Exception => e.printStackTrace()
         }

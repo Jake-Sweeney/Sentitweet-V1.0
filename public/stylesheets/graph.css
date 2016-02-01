@@ -1,0 +1,73 @@
+.Jewlie {
+    background-color: white;
+}
+.rainbow {
+    background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font: 10px sans-serif;
+}
+
+.x.axis path {
+    display: none;
+}
+
+.bar {
+    fill: cyan;
+}
+
+.bar:hover {
+    fill: magenta;
+}
+
+/**
+	* The following css (all the -tip ones) are for the hovering text above the bars in the chart.
+	*/
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    border-radius: 100%;
+}
+
+/**
+	* This creates the little triangle for the tooltip.
+	* (specifically the content line does this).
+	*/
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0,0,0,0.8);
+    content: "\25BC"; /*used for css icons -> \25BC = the triangle down shape. */
+    position: absolute;
+    text-align: center;
+}
+
+/**
+	* Used for positioning the trianlge icon
+	*/
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
