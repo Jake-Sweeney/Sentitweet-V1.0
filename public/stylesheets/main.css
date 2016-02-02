@@ -1,3 +1,33 @@
 body {
     background-color: deepskyblue;
+    width: auto;
+}
+
+.searchFormDiv {
+    margin: auto;
+    padding: 10% 15% 10% 20%;
+}
+
+#searchForm {
+    text-align: center;
+}
+
+#searchText {
+    font: 40px sans-serif;
+    color: navy;
+}
+
+#inputField {
+    height: 40px;
+    font-size: 30px;
+}
+
+#searchButton, #graphButton {
+    font: 30px sans-serif;
+    height: 40px;
+}
+
+#tweetsTable, th, td{
+    border: 1px solid navy;
+    color: #000000;
 }

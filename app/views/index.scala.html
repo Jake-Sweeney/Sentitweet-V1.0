@@ -4,21 +4,28 @@
 @import helper._
 @main("SentiTweet") {
 
-    @form(routes.Application.queryUserSearch()){
-        @inputText(searchForm("userQuery"))
-        <input type="submit" value="Search" align="right" >
-    }
+    <div class="searchFormDiv">
+        <form id="searchForm" action="@routes.Application.queryUserSearch()" method="post">
+            <p id="searchText"><b>Search for Tweets</b></p>
+            <input id="inputField" type="text" name="userQuery">
+            <input id="searchButton" type="submit" value="Search">
+        </form>
+    </div>
 
-    @form(routes.Application.graphButtonClicked()) {
-        <input type="submit" id="graphButton" value="Graph Results"/>
-    }
+    <div class="graphFormDiv">
+        <form action="@routes.Application.graphButtonClicked()">
+            <input type="submit" id="graphButton" value="Graph Results"/>
+        </form>
+    </div>
 
-    @form(routes.Application.saveSearchResults()) {
-        <input type="submit" value="Save Your Results"/>
-    }
+    <div class="saveResultsDiv" style="display: none">
+        <form action="@routes.Application.saveSearchResults()">
+            <input type="submit" id="saveResultsButton" value="Save Results"/>
+        </form>
+    </div>
 
-    <p>Search returned @tweets.size results.</p>
-    <table border="1">
+    <p id="resultsText">Search returned @tweets.size results.</p>
+    <table id="tweetsTable">
         @for(tweet <- tweets) {
             <tr>
                 <td>@tweet.username</td>
@@ -27,4 +34,28 @@
             </tr>
         }
     </table>
+
+    <script>
+    /**
+     * Show only necessary elements on first load of web app.
+     * After results have been gathered then the other options will be displayed.
+     */
+        window.onload = function() {
+            var tweetsSize = @tweets.size;
+
+            var table = document.getElementById("tweetsTable");
+            var resultText = document.getElementById("resultsText");
+            var graphButton =  document.getElementById("graphButton");
+
+            if(tweetsSize > 0) {
+                table.style.display = "table";
+                resultText.style.visibility = "visible";
+                graphButton.style.visibility = "visible";
+            } else {
+                table.style.display = "none";
+                resultText.style.visibility = "hidden";
+                graphButton.style.visibility = "hidden";
+            }
+        };
+    </script>
 }
