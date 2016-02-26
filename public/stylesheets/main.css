@@ -1,3 +1,10 @@
+header {
+    background-color: navy;
+    color: white;
+    text-align: center;
+    padding: 2px;
+}
+
 body {
     background-color: deepskyblue;
     width: auto;
@@ -5,7 +12,11 @@ body {
 
 .searchFormDiv {
     margin: auto;
-    padding: 10% 15% 10% 20%;
+    padding: 5% 5% 5% 5%;
+}
+
+.graphFormDiv {
+   text-align: center;
 }
 
 #searchForm {
@@ -13,7 +24,7 @@ body {
 }
 
 #searchText {
-    font: 40px sans-serif;
+    font: 30px sans-serif;
     color: navy;
 }
 
@@ -27,7 +38,25 @@ body {
     height: 40px;
 }
 
+#resultsText {
+    font-size: 20px;
+    color: white;
+}
+
+#tweetsTable {
+    width: 100%;
+}
+
 #tweetsTable, th, td{
-    border: 1px solid navy;
+    border: 1px ridge navy;
     color: #000000;
+}
+
+footer {
+    color: white;
+    clear: both;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }

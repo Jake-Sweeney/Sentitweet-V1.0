@@ -7,9 +7,11 @@ import play.api.libs.json._
   * Created by Jake on 17/01/2016.
   */
 
-case class Tweet(id: Long, username: String, date: String, text: String, favouriteCount: Int, retweetCount: Int)
+case class Tweet(id: Long, username: String, date: String, text: String, favouriteCount: Int, retweetCount: Int, var sentiment: String  = "")
 
 object Tweet {
+
+  var sentiement = ""
 
   implicit object TweetFormat extends Format[Tweet] {
 
@@ -21,7 +23,8 @@ object Tweet {
         "date" -> JsString(tweet.date),
         "text" -> JsString(tweet.text),
         "favouriteCount" -> JsNumber(tweet.favouriteCount),
-        "retweetCount" -> JsNumber(tweet.retweetCount)
+        "retweetCount" -> JsNumber(tweet.retweetCount),
+        "sentiment" -> JsString(tweet.sentiment)
       )
       JsObject(tweetSeq)
     }
@@ -31,5 +34,11 @@ object Tweet {
       JsSuccess(Tweet(0L,"", "", "", 0, 0))
     }
   }
+
+  /*Can't access these from the object reference i.e. loops. */
+
+  def sentiment_(value: String) = sentiement = value
+
+  def sentiment: String = sentiement
 
 }

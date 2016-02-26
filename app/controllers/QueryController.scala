@@ -1,8 +1,11 @@
 package controllers
 
 import model.Tweet
-import twitter4j.Query
 
+import twitter4j.Query
+import twitter4j.Query.ResultType
+
+import scala.util.control.Breaks._
 import scala.collection.JavaConversions._
 
 /**
@@ -10,22 +13,61 @@ import scala.collection.JavaConversions._
   */
 object QueryController extends TwitterInstance {
 
-  var querySize = 15
+  var querySize = 10
   var batchSearch: Boolean = false
-  private var tweets = List[Tweet]()
+  val maxQueries = 5
+  private val tweets = scala.collection.mutable.MutableList[Tweet]()
 
   def searchForTweets(userQuery: String): List[Tweet] = {
-    val query = new Query(userQuery)
-    query.setCount(querySize)
-    val searchResults = twitter.search(query).getTweets.toList
+    var totalTweets = 0
+    var maxID: Long = -1
 
-    println(f"Query returned ${searchResults.size}%d results.")
+    try {
+      var tweetSearchRateLimit = twitter.getRateLimitStatus("search").get("/search/tweets")
+      //TODO replace this with logging.
+      printf("There are %d calls remaining out of %d.\nLimit resets in %d seconds.\n",
+        tweetSearchRateLimit.getRemaining, tweetSearchRateLimit.getLimit, tweetSearchRateLimit.getSecondsUntilReset)
 
-    tweets = for (status <- searchResults) yield new Tweet(
-      status.getId, status.getUser.getScreenName, status.getCreatedAt.toString, status.getText,
-      status.getFavoriteCount, status.getRetweetCount
-    )
-    tweets
+      breakable {
+        for (i <- 0 until maxQueries) {
+          printf("Iteration: %d\n", i)
+
+          if (tweetSearchRateLimit.getRemaining == 0) {
+            printf("Application must wait for %d seconds due to rate limits.\n", tweetSearchRateLimit.getSecondsUntilReset)
+            Thread.sleep((tweetSearchRateLimit.getSecondsUntilReset + 2) * 10001)
+          }
+
+          val query = new Query(userQuery)
+          query.setCount(querySize)
+          query.resultType(ResultType.recent)
+          query.setLang("en")
+
+          if (maxID != -1) query.setMaxId(maxID - 1)
+
+          val queryResult = twitter.search(query)
+
+          if (queryResult.getTweets.size() == 0) break
+
+          //Cleaing the text of tweet won't be done here, it will be moved to a new class and called when sentiment analysis occurs.
+          for(status <- queryResult.getTweets) {
+            totalTweets = totalTweets + 1
+            if (maxID == -1 || status.getId < maxID) maxID = status.getId
+            tweets += new Tweet(
+              status.getId,
+              status.getUser.getScreenName,
+              status.getCreatedAt.toString,
+              status.getText,
+              status.getFavoriteCount,
+              status.getRetweetCount)
+          }
+          tweetSearchRateLimit = queryResult.getRateLimitStatus
+        }
+      }
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
+    printf("A total of %d tweets were gathered.\n", totalTweets)
+    tweets.toList
   }
 
   //The batchSearch flag is for larger queries later.
@@ -38,5 +80,7 @@ object QueryController extends TwitterInstance {
     } else querySize = size
   }
 
-  def getResults: List[Tweet] = tweets
+  def getResults: List[Tweet] = tweets.toList
+
+  def clearResults = tweets.clear
 }

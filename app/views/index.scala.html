@@ -1,8 +1,19 @@
 @import model.Tweet
 @(tweets: List[Tweet], searchForm: Form[String])(implicit messages: Messages)
 
-@import helper._
 @main("SentiTweet") {
+
+    @*<form id="testForm" action="@routes.Application.cleanData()" method="GET">*@
+        @*<input id="testBtn" type="submit" value="Clean Data">*@
+    @*</form>*@
+
+    @* <form id="clearResultsForm" action="@routes.Application.clearResults()">
+        <input id="clearResultsBtn" type="submit" value="Clear Results">
+    </form> *@
+
+    @* <form id="sentimentForm" action="@routes.Application.getTweetSentiment()" method="get">
+        <input id="sentimentBtn" type="submit" value="Sentiment">
+    </form> *@
 
     <div class="searchFormDiv">
         <form id="searchForm" action="@routes.Application.queryUserSearch()" method="post">
@@ -14,9 +25,11 @@
 
     <div class="graphFormDiv">
         <form action="@routes.Application.graphButtonClicked()">
-            <input type="submit" id="graphButton" value="Graph Results"/>
+            <input id="graphButton" type="submit" value="Graph Results"/>
         </form>
     </div>
+
+    @* Save results button hidden for now. *@
 
     <div class="saveResultsDiv" style="display: none">
         <form action="@routes.Application.saveSearchResults()">

@@ -17,7 +17,7 @@
 }
 
 .axis text {
-    font: 10px sans-serif;
+    font: 15px sans-serif;
 }
 
 .x.axis path {
@@ -70,4 +70,21 @@
     margin: -1px 0 0 0;
     top: 100%;
     left: 0;
+}
+
+#googleMap {
+    margin: 0 auto;
+    width: 800px;
+    height: 500px;
+}
+#resultsCounter {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 30px;
+    color: BLUE;
+}
+
+#tweetsTableWithSentiment, th, td{
+    border: 1px ridge navy;
+    color: #000000;
 }
