@@ -1,62 +1,133 @@
-header {
-    background-color: navy;
-    color: white;
-    text-align: center;
-    padding: 2px;
-}
-
 body {
-    background-color: deepskyblue;
-    width: auto;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
-.searchFormDiv {
-    margin: auto;
-    padding: 5% 5% 5% 5%;
+main {
+    flex: 1 0 auto;
 }
 
-.graphFormDiv {
-   text-align: center;
-}
-
-#searchForm {
+footer {
     text-align: center;
 }
 
-#searchText {
-    font: 30px sans-serif;
-    color: navy;
+.tabs .tab a {
+    color: #ffffff;
 }
 
-#inputField {
-    height: 40px;
-    font-size: 30px;
+.tabs .tab a:hover {
+    background-color: #1976D2;
+    color: #cccccc;
 }
 
-#searchButton, #graphButton {
-    font: 30px sans-serif;
-    height: 40px;
+.tabs .indicator {
+    background-color: #ffffff;
 }
 
-#resultsText {
-    font-size: 20px;
-    color: white;
+.rainbow {
+    background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-#tweetsTable {
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font: 15px sans-serif;
+}
+
+.x.axis path {
+    display: none;
+}
+
+
+/**
+	* The following css (all the -tip ones) are for the hovering text above the bars in the chart.
+	*/
+
+.d3-tip {
+    line-height: 1;
+    font-weight: bold;
+    padding: 12px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    border-radius: 100%;
+}
+
+/**
+	* This creates the little triangle for the tooltip.
+	* (specifically the content line does this).
+	*/
+
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
     width: 100%;
+    line-height: 1;
+    color: rgba(0,0,0,0.8);
+    content: "\25BC"; /*used for css icons -> \25BC = the triangle down shape. */
+    position: absolute;
+    text-align: center;
 }
 
-#tweetsTable, th, td{
+/**
+	* Used for positioning the triangle icon
+	*/
+
+.d3-tip.n:after {
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+}
+
+#googleMap {
+    width: 60%;
+    height: 400px;
+    float: right;
+    padding: 15px;
+}
+
+/**
+  * The following CSS is for the bar chart.
+  */
+
+#chartLegend {
+    width: 40%;
+    float: left;
+    padding: 5px;
+}
+
+#chartLegendTable {
+    border: 0;
+}
+
+#barChart {
+    width:40%;
+    float: left;
+    padding: 10px;
+}
+
+#resultsCounter {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 30px;
+    color: BLUE;
+}
+
+#tweetsTableWithSentiment {
     border: 1px ridge navy;
     color: #000000;
 }
 
-footer {
-    color: white;
-    clear: both;
-    text-align: center;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+select {
+    display: inherit;
 }

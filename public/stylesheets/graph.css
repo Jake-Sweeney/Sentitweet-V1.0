@@ -28,10 +28,6 @@
     fill: cyan;
 }
 
-.bar:hover {
-    fill: magenta;
-}
-
 /**
 	* The following css (all the -tip ones) are for the hovering text above the bars in the chart.
 	*/
@@ -88,3 +84,4 @@
     border: 1px ridge navy;
     color: #000000;
 }
+

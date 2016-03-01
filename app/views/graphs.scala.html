@@ -24,7 +24,7 @@
     <script>
       var jsonTweets = @Html(tweetsAsJson);
       var sentimentCount = @Html(sentimentCount)
-      createChart(jsonTweets, sentimentCount, "Sentiment");
+      createBarChart(jsonTweets, sentimentCount, "Sentiment");
     </script>
     <div id="colorInformation">
         <span style="color:red;font-size: 20px;">Red Marker = Negative</span><br />

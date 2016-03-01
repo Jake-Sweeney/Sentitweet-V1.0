@@ -15,4 +15,5 @@ trait TwitterInstance {
     .setOAuthAccessToken("290017343-IFcgtcnJsGhNYpLtwDLQ8Mdc9H68sTpoAAWBPSqb")
     .setOAuthAccessTokenSecret("5grRID2Bz0ZY7kITQ2MS3ESOy3uilcC4wXGgbpfphrrIm")
   val twitter: Twitter = new TwitterFactory(configurationBuilder.build()).getInstance()
+
 }

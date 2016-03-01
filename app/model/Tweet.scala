@@ -11,8 +11,6 @@ case class Tweet(id: Long, username: String, date: String, text: String, favouri
 
 object Tweet {
 
-  var sentiement = ""
-
   implicit object TweetFormat extends Format[Tweet] {
 
     //When Json.toJson() is called this structure is used for objects of Tweet type.
@@ -34,11 +32,4 @@ object Tweet {
       JsSuccess(Tweet(0L,"", "", "", 0, 0))
     }
   }
-
-  /*Can't access these from the object reference i.e. loops. */
-
-  def sentiment_(value: String) = sentiement = value
-
-  def sentiment: String = sentiement
-
 }

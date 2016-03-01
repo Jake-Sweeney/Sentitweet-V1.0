@@ -18,6 +18,9 @@ GET     /search/graphresults              controllers.Application.graphButtonCli
 
 #GET     /cleanData                        controllers.Application.cleanData
 
-GET     /search/sentimentanalysis         controllers.Application.getTweetSentiment
+#GET     /search/sentimentanalysis         controllers.Application.getTweetSentiment
 
 GET     /search/clearResults              controllers.Application.clearResults
+
+#GET    /search/filterResults             controllers.Application.filterResults
+
