@@ -2,7 +2,6 @@ function createLineGraph(tweets, senitmentCount, topic) {
 
     var width = 900;
     var height = 400;
-    // var margin = 40;
     var margin = {top: 20, right: 10, bottom: 40, left: 20};
     var transitionDuration = 5000;
 
@@ -19,6 +18,8 @@ function createLineGraph(tweets, senitmentCount, topic) {
             d.sentiment = -1;
         else
             d.sentiment = 0;
+        console.log(d.date);
+        console.log(d.sentiment);
     });
 
     tweets.sort(function (a, b) {
@@ -84,8 +85,6 @@ function createLineGraph(tweets, senitmentCount, topic) {
         .attr("class", "area")
         .style("fill", function() {
             var majorSentiment = getMajorSentiment();
-            console.log(majorSentiment);
-
             if(majorSentiment == "positive") {
                 return "rgba(0,230,77,0.7)";
             } else if(majorSentiment == "negative") {

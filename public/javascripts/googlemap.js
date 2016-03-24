@@ -44,9 +44,9 @@ function createMarkers() {
         }
 
         var lng =  tweet.tweetGeolocation.lng;
-        //console.log(tweet.tweetGeolocation.lng);
+
         var lat = tweet.tweetGeolocation.lat;
-        //console.log(tweet.tweetGeolocation.lat);
+        console.log(tweet.tweetGeolocation.lng + ", " + tweet.tweetGeolocation.lat);
 
         if(lng != 0 && lat != 0) {
             numberOfGeolocatedTweets++;

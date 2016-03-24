@@ -231,10 +231,24 @@ input#advanced_search_bar {
 }
 
 select {
-    display: block;
+    display: inline-block;
+    background-color: #1E88E5;
 }
 
 label {
-    color: #000000;
-    font-size: 18px;
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+select.form-control.input.sm {
+    background-color: #1E88E5;
+
+}
+
+input.form-control.input-sm {
+    border-bottom: 1px solid #FFFFFF;
+}
+
+li.pagination:hover {
+    background-color: #1E88E5;
 }

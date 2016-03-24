@@ -48,7 +48,7 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
   }
 
   def calculateSentimentOfTweets (tweets: List[Tweet]): Unit = {
-    val tweetsWithSentiment: List[Tweet] = SentimentClassiferModel.classifyTweetSentiment(QueryController.getResults)
+    val tweetsWithSentiment: List[Tweet] = SentimentClassiferModel.classifyTweetSentiment(tweets)
   }
 
   def getTweetSentimentCountAsJson(tweets: List[Tweet]): String = {
@@ -144,5 +144,13 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
     QueryController.searchForTweets(userSearchQuery)
     calculateSentimentOfTweets(QueryController.getResults)
     Redirect(routes.Application.listResults())
+  }
+
+  def loadSampleData() = Action { implicit request =>
+    val sampleDataLoader = new SampleDataLoader
+    val tweets = sampleDataLoader.loadData()
+    //wont need to calculate the sentiment in future, just for these particular sets of results.
+    calculateSentimentOfTweets(tweets)
+    Ok(views.html.index(tweets, searchForm, userSearchQuery, getTweetsAsJson(tweets), getTweetSentimentCountAsJson(tweets)))
   }
 }

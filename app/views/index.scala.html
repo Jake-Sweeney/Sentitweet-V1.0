@@ -186,7 +186,8 @@
                             </ul>
                         </div>
                         <script>
-                            createLineGraph(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "Senitment");
+                                console.log("linegraph called");
+                                createLineGraph(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "Senitment");
                         </script>
                     </div>
                 </div>
@@ -277,7 +278,11 @@
                             </li>
                         </ul>
                     </div>
-
+                    <div id="sampleResultsControl" style="margin-top: 5%;">
+                        <form id="sampleResultsForm" action="@routes.Application.loadSampleData">
+                            <button class="btn waves-effect waves-light" id="loadSampleResultsBtn" type="submit">Load Sample Results<i class="material-icons left">grade</i></button>
+                        </form>
+                    </div>
                 </div>
             </div>
 

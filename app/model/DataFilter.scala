@@ -19,5 +19,4 @@ class DataFilter(tweets: List[Tweet]) {
     val neutralTweetsRDD = tweets.filter(tweet => tweet.sentiment == "NEUTRAL")
     neutralTweetsRDD
   }
-
 }

@@ -61,7 +61,6 @@ object QueryController extends TwitterInstance {
               if (maxID == -1 || status.getId < maxID) maxID = status.getId
               addTweet(status)
               totalTweets = totalTweets + 1
-              println(status.getUser.getBiggerProfileImageURLHttps)
             }
           }
           tweetSearchRateLimit = queryResult.getRateLimitStatus
@@ -104,6 +103,13 @@ object QueryController extends TwitterInstance {
           status.getFavoriteCount,
           status.getRetweetCount
         )
+        println(status.getId + ":;:" +
+          status.getUser.getScreenName + ":;:" +
+          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
+          status.getCreatedAt.toString + ":;:" +
+          status.getText + ":;:" +
+          status.getFavoriteCount + ":;:" +
+          status.getRetweetCount)
       } else {
         tweets += new Tweet(
           status.getId,
@@ -117,6 +123,16 @@ object QueryController extends TwitterInstance {
           status.getGeoLocation.getLongitude,
           status.getGeoLocation.getLatitude
         )
+        println(status.getId + ":;:" +
+          status.getUser.getScreenName + ":;:" +
+          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
+          status.getCreatedAt.toString + ":;:" +
+          status.getText + ":;:" +
+          status.getFavoriteCount + ":;:" +
+          status.getRetweetCount + ":;:" +
+          "" + ":;:" +
+          status.getGeoLocation.getLongitude + ":;:" +
+          status.getGeoLocation.getLatitude)
       }
     }
   }

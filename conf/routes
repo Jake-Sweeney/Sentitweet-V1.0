@@ -19,3 +19,5 @@ GET     /search/clearResults              controllers.Application.clearResults
 POST    /search/filterResults             controllers.Application.filterResults
 
 POST    /advancedSearch                   controllers.Application.queryAdvancedUserSearch
+
+GET     /loadsampledata                  controllers.Application.loadSampleData
