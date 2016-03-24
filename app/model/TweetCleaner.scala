@@ -9,19 +9,11 @@ import java.util.regex.Pattern
 object TweetCleaner {
 
   def cleanText(text: String): String = {
-    //printf("Intial text = %s\n",text)
     var cleanText = replaceEscapedCharacters(text)
-    //printf("Text with escaped characters removed = %s\n",cleanText)
     cleanText = removeURLsFromText(cleanText)
-    //printf("Text with URL removed = %s\n", cleanText)
     cleanText = removeReTweetTagFromText(cleanText)
-    //printf("Text with RT tag removed = %s\n", cleanText)
     cleanText = removeEmojisFromText(cleanText)
-    //printf("Text with Emojis removed = %s\n", cleanText)
     cleanText = removeHandlersFromText(cleanText)
-    //printf("Text with handlers removed = %s\n", cleanText)
-    //println("\n\n")
-    //println(cleanText)
     cleanText
   }
 
@@ -54,9 +46,7 @@ object TweetCleaner {
     val unicodeOutliers = Pattern.compile("[\ud83c\udc00-\ud83c\udfff]|[\ud83d\udc00-\ud83d\udfff]|[\u2600-\u27ff]",
       Pattern.UNICODE_CASE | Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE)
     val unicodeOutlierMatcher = unicodeOutliers.matcher(utf8Text)
-    //printf("Before = %s\n", utf8Text)
     utf8Text = unicodeOutlierMatcher.replaceAll("")
-    //printf("After = %s\n", utf8Text)
     utf8Text
   }
 

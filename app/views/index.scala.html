@@ -1,17 +1,63 @@
 @import model.Tweet
-@(tweets: List[Tweet], searchForm: Form[String], tweetsAsJson: String, sentimentCountAsJson: String)(implicit messages: Messages)
+@(tweets: List[Tweet], searchForm: Form[String], userQuery: String, tweetsAsJson: String, sentimentCountAsJson: String)(implicit messages: Messages)
 
 @main("SentiTweet") {
+    @*Only load what's necessary on the page.*@
+    <script>
+            window.onload = function() {
+                console.log("In the onload function");
+                var tweetSize = @tweets.size;
+
+                var tweetsContent = document.getElementById("tweets");
+                var mapTabContent = document.getElementById("mapTab");
+                var timelineContent = document.getElementById("timeline");
+                var searchTermDisplay = document.getElementById("searchTerm");
+                var clearResultsButton = document.getElementById("clearResultsBtn");
+
+                if(tweetSize > 0) {
+                    timelineContent.style.visibility = "visible";
+                    tweetsContent.style.visibility = "visible";
+                    mapTabContent.style.visibility = "visible";
+                    searchTermDisplay.style.display = "inline";
+                } else {
+                    timelineContent.style.visibility = "hidden";
+                    tweetsContent.style.visibility = "hidden";
+                    mapTabContent.style.visibility = "hidden";
+                    searchTermDisplay.style.display = "none";
+                }
+            }
+    </script>
+
+    <script>
+            $(function() {
+
+                $('input[type=radio]').each(function() {
+                    var state = JSON.parse(localStorage.getItem('radio_' + this.id));
+
+                    if (state) {
+                        this.checked = state.checked;
+                    }
+                });
+            });
+
+            $(window).bind('unload', function() {
+                $('input[type=radio]').each(function() {
+                    localStorage.setItem('radio_' + this.id, JSON.stringify({checked: this.checked}));
+                });
+            });
+    </script>
+
     <header>
         <nav class="blue darken-1">
             <div class="nav-wrapper container">
-                <a href="#!" class="brand-logo">Sentitweet</a>
+                <a href="/" class="brand-logo">Sentitweet</a>
                 <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li>
-                        <form id="searchForm" action="@routes.Application.queryUserSearch()" method="post">
+                        <form id="searchForm" action="@routes.Application.queryUserSearch()" onsubmit="javascript:showLoadingScreen()" method="post">
                             <div class="input-field">
-                                <input id="search_bar" name="userQuery" type="search" placeholder="Search for Tweets" class="validate" required="" aria-required="true" oninvalid="this.setCustomValidity('Search term cannot be empty.')">
+                                <input id="search_bar" name="userQuery" type="search" placeholder="Search for Tweets" class="validate"
+                                required="" aria-required="true" oninvalid="this.setCustomValidity('Search term cannot be empty.')">
                                 <label for="search_bar"><i class="material-icons">search</i></label>
                                 <i class="material-icons" onclick="javascript:clearText()">close</i>
                             </div>
@@ -32,177 +78,260 @@
         function clearText() {
             document.getElementById("search_bar").value = "";
         }
+
     </script>
     <main class="container">
-        <div class="row">
-            <div class="col s10 push-s2" id="tabSection">
-                <ul class="tabs blue darken-1">
-                    <li class="tab col s3"><a class="active" href="#tweets">Tweets</a></li>
-                    <li class="tab col s3"><a href="#mapTab">Map</a></li>
-                    <li class="tab col s3"><a href="#timeline">Timeline</a></li>
-                </ul>
-                <br />
+        <div id="mainContent">
+            <div id="searchTermDiv">
+                <span id="searchTerm">Displaying Results for "@userQuery"</span>
+            </div>
+            <div class="row">
+                <div class="col s9 push-s3" id="tabSection">
+                    <ul class="tabs blue darken-1" id="tabNames">
+                        <li id="tweetsTab" class="tab col s3"><a class="active" href="#tweets">Tweets</a></li>
+                        <li id="tweetMapTab" class="tab col s3"><a href="#mapTab">Map</a></li>
+                        <li id="timelineTab" class="tab col s3"><a href="#timeline">Timeline</a></li>
+                    </ul>
+                    <br />
 
-                <div id="tweets" class="col s12">
-                    <div id="tweetsTableDiv">
-                        <table id="tweetsTable" class="cell-border" cellspacing="0" width="100%" >
-                            <thead>
-                                <tr class="grey lighten-2">
-                                    <th data-field="username"><u>Username</u></th>
-                                    <th data-field="date"><u>Date Created</u></th>
-                                    <th data-field="sentiment"><u>Sentiment</u></th>
-                                    <th data-field="text"><u>Text</u></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for(tweet <- tweets) {
-                                    @if(tweet.sentiment == "POSITIVE") {
-                                        <tr class="green">
-                                            <td>@tweet.username</td>
-                                            <td>@tweet.date</td>
-                                            <td>@tweet.sentiment</td>
-                                            <td>@tweet.text</td>
-                                        </tr>
-                                    } @if(tweet.sentiment == "NEGATIVE") {
-                                        <tr class="red">
-                                            <td>@tweet.username</td>
-                                            <td>@tweet.date</td>
-                                            <td>@tweet.sentiment</td>
-                                            <td>@tweet.text</td>
-                                        </tr>
-                                    } @if(tweet.sentiment == "NEUTRAL") {
-                                        <tr class="blue">
-                                            <td>@tweet.username</td>
-                                            <td>@tweet.date</td>
-                                            <td>@tweet.sentiment</td>
-                                            <td>@tweet.text</td>
-                                        </tr>
+                    <div id="tweets" class="col s12" style="visibility: hidden ;">
+                        <div id="tweetsTableDiv">
+                            <table id="tweetsTable" class="cell-border" cellspacing="0" width="100%" >
+                                <thead>
+                                    <tr class="grey lighten-2">
+                                        <th data-field="profile"><u>Profile</u></th>
+                                        <th data-field="username"><u>Username</u></th>
+                                        <th data-field="date"><u>Date Created</u></th>
+                                        <th data-field="sentiment"><u>Sentiment</u></th>
+                                        <th data-field="text"><u>Text</u></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for(tweet <- tweets) {
+                                        @if(tweet.sentiment == "POSITIVE") {
+                                            <tr style="background-color: rgba(0,230,77,0.8)" >
+                                                <td><a href="https://twitter.com/@tweet.username"><img id="userProfileImage" src="@tweet.profileImageUrl"></a></td>
+                                                <td>@tweet.username</td>
+                                                <td>@tweet.date</td>
+                                                <td>@tweet.sentiment</td>
+                                                <td>@tweet.text <br/><button formaction="https://twitter.com/@tweet.username/status/@tweet.id">Show Tweet</button></td>
+                                            </tr>
+                                        } @if(tweet.sentiment == "NEGATIVE") {
+                                            <tr style="background-color: rgba(253,117,103,0.8)">
+                                                <td><a href="https://twitter.com/@tweet.username"><img id="userProfileImage" src="@tweet.profileImageUrl"></a></td>
+                                                <td>@tweet.username</td>
+                                                <td>@tweet.date</td>
+                                                <td>@tweet.sentiment</td>
+                                                <td>@tweet.text</td>
+                                            </tr>
+                                        } @if(tweet.sentiment == "NEUTRAL") {
+                                            <tr style="background-color: rgba(105,145,253,0.8)">
+                                                <td><a href="https://twitter.com/@tweet.username"><img id="userProfileImage" src="@tweet.profileImageUrl"></a></td>
+                                                <td>@tweet.username</td>
+                                                <td>@tweet.date</td>
+                                                <td>@tweet.sentiment</td>
+                                                <td>@tweet.text</td>
+                                            </tr>
+                                        }
                                     }
-                                }
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="mapTab" class="col s12" style="visibility: hidden;">
+                        <script>
+                            console.log("initialize data has been called.");
+                            initializeData(@Html(tweetsAsJson));
+                        </script>
+                        <div id="googleMap">
+                            <div id="geolocatedTweetsAmount" style="color: #FFFFFF ; position: absolute" >
+                                <h4 id="geolocatedTweetsAmountText">Number of Geolocated Results</h4>
+                            </div>
+                        </div>
+                        <script>
+                            $('a[href=#mapTab]').on('click', function() {
+                                console.log("Map tab has been clicked");
+                                setTimeout(function(){
+                                    google.maps.event.trigger(map, 'resize');
+                                }, 50);
+                            });
+
+                            appendResultText();
+                        </script>
+                        <div id="chartLegend">
+                            <table id="chartLegendTable" cellpadding="0" cellspacing="0">
+                                <tr border="0">
+                                    <td style="color:#00E64D;"><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"><b>POSITIVE</b></td>
+                                    <td style="color:#6991FD;"><img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"><b>NEUTRAL</b></td>
+                                    <td style="color:#FD7567;"><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"><b>NEGATIVE</b></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="barChart"></div>
+                        <script>
+                            createBarChart(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "Sentiment");
+                        </script>
+                    </div>
+
+                    <div id="timeline" class="col s12" style="visibility: hidden ;">
+                        <div id="lineGraph"></div>
+                        <div id="tweetStatusBar">
+                            <ul class="collection" id="statusContainer" style="visibility: hidden;">
+                                <li id="collectionContent" class="collection-item avatar">
+                                    <img alt="" id="userProfileForStatusBar" class="circle">
+                                    <span class="title" id="statusUsername"></span>
+                                    <p id="statusText"></p>
+                                </li>
+                            </ul>
+                        </div>
+                        <script>
+                            createLineGraph(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "Senitment");
+                        </script>
                     </div>
                 </div>
-
-                <div id="mapTab" class="col s12">
-                    <script>
-                        initializeData(@Html(tweetsAsJson));
-                    </script>
-                    <div id="googleMap"></div>
-                    <script>
-                        $('a[href=#mapTab]').on('click', function() {
-                            console.log("Map tab has been clicked");
-                            setTimeout(function(){
-                                google.maps.event.trigger(map, 'resize');
-                            }, 50);
+                <script>
+                    $(document).ready(function() {
+                        $('#tweetsTable').DataTable({
+                            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
                         });
-                    </script>
-                    <div id="chartLegend">
-                        <table id="chartLegendTable" cellpadding="0" cellspacing="0">
-                            <tr border="0">
-                                <td style="color:#00E64D;"><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"><b>POSITIVE</b></td>
-                                <td style="color:#6991FD;"><img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"><b>NEUTRAL</b></td>
-                                <td style="color:#FD7567;"><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"><b>NEGATIVE</b></td>
-                            </tr>
-                        </table>
+                    } );
+                </script>
+
+                <div class="col s3 pull-s9" id="dataManipulationSection">
+                    <div id="filterSection">
+                        <ul class="collapsible" data-collapsible="accordion" id="collapsibleDataManipulationSection">
+                            <li>
+                                <div class="collapsible-header blue darken-1" id="collapsibleFilterSection"><i class="material-icons">equalizer</i>Filter &#9661;</div>
+                                <div class="collapsible-body">
+                                    <form action="@routes.Application.filterResults()" method="post">
+                                        <table id="filterBtnsTable" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td>
+                                                    <input class="with-gap" name="sentiment" type="radio" value="positive" id="positiveRadioBtn" autocomplete="off"/>
+                                                    <label for="positiveRadioBtn" style="color:#00E64D;"><b>Positive</b></label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input class="with-gap" name="sentiment" type="radio" value="negative" id="negativeRadioBtn" autocomplete="off"/>
+                                                    <label for="negativeRadioBtn" style="color:#FD7567;"><b>Negative</b></label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input class="with-gap" name="sentiment" type="radio" value="neutral"  id="neutralRadioBtn" autocomplete="off"/>
+                                                    <label for="neutralRadioBtn" style="color:#6991FD;"><b>Neutral</b></label>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <input class="with-gap" name="sentiment" type="radio" value="none" checked="checked" id="noneRadioBtn" autocomplete="off"/>
+                                                    <label for="noneRadioBtn" style="color:#757575;"><b>None</b></label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <button class="btn waves-effect waves-light" id="filterBtn" type="submit" name="action">OK<i class="material-icons left">done</i></button>
+                                    </form>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="collapsible-header blue darken-1" id="collapsibleAdvancedSearchSection"><i class="material-icons">search</i>Advanced Search &#9661;</div>
+                                <div id="advancedSearchCollapsibleBody" class="collapsible-body">
+                                    <form id="advancedSearchForm" action="@routes.Application.queryAdvancedUserSearch()" onsubmit="javascript:disableBtns();showLoadingScreen()" method="post">
+                                        <fieldset>
+                                            <legend>Only Verified Tweets</legend>
+                                            <input class="with-gap" name="verified" type="radio" value="false" id="notAllVerifiedBtn" autocomplete="off" checked="checked"/>
+                                            <label for="notAllVerifiedBtn" style="color:#000000;">No</label>
+                                            <input class="with-gap" name="verified" type="radio" value="true" id="allVerifiedBtn" autocomplete="off"/>
+                                            <label for="allVerifiedBtn" style="color:#000000;">Yes</label>
+                                        </fieldset>
+                                      <fieldset>
+                                            <legend>Result Type</legend>
+                                            <input class="with-gap" name="resultType" type="radio" value="recent" id="recentResultsBtn" autocomplete="off" checked="checked"/>
+                                            <label for="recentResultsBtn" style="color:#000000;">Recent</label>
+                                            <input class="with-gap" name="resultType" type="radio" value="popular" id="popularResultsBtn" autocomplete="off"/>
+                                            <label for="popularResultsBtn" style="color:#000000;">Popular</label>
+                                            <input class="with-gap" name="resultType" type="radio" value="mixed" id="mixedResultsBtn" autocomplete="off"/>
+                                            <label for="mixedResultsBtn" style="color:#000000;">Mixed</label>
+                                        </fieldset>
+                                        <fieldset>
+                                            <legend>Max # of Results.</legend>
+                                            <input type="text" id="valuesRange" name="maxNumResults" value="" />
+                                        </fieldset>
+                                        <fieldset>
+                                            <legend>Tweet Locations</legend>
+                                            <input class="with-gap" name="randomGeolocations" type="radio" value="false" id="noRandomGeolocationsBtn" autocomplete="off" checked="checked"/>
+                                            <label for="noRandomGeolocationsBtn" style="color:#000000;">Actual</label>
+                                            <input class="with-gap" name="randomGeolocations" type="radio" value="true" id="allRandomGeolocationsBtn" autocomplete="off"/>
+                                            <label for="allRandomGeolocationsBtn" style="color:#000000;">Random</label>
+                                        </fieldset>
+                                        <div class="input-field">
+                                            <input id="advanced_search_bar" name="advancedUserQuery" type="search" placeholder="Search for Tweets" class="validate"
+                                            required="" aria-required="true">
+                                            <label for="advanced_search_bar"><i class="material-icons prefix">search</i></label>
+                                        </div>
+                                        <button class="btn waves-effect waves-light" id="advancedSearchBtn" type="submit">Search<i class="material-icons left">done</i></button>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div id="barChart"></div>
-                    <script>
-                        createBarChart(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "Sentiment");
-                    </script>
-                </div>
 
-                <div id="timeline" class="col s12">
-                    <span>Hello there.</span>
                 </div>
-
             </div>
+
+            <div id="deleteBtnDiv">
+                <form action="@routes.Application.clearResults()">
+                    <button class="btn waves-effect waves-light" id="clearResultsBtn" type="submit"
+                    name="action" style="visibility: hidden ;">Clear Results<i class="material-icons left">delete</i>
+                    </button>
+                </form>
+            </div>
+
+            <ol id="introContent">
+                <li data-class="brand-logo" data-button="Next" data-options="tipLocation:bottom;tipAnimation:fade;">
+                    <h2>Welcome</h2>
+                    <p>Hey there!<br />Welcome to Sentitweet, a website that allows you to find out the sentiment of tweets! Let's take a look at the features its offers.</p>
+                </li>
+                <li data-id="searchForm" data-button="Next" data-options="tipLocation:bottom; tipAnimation: fade;">
+                    <h2>Search Bar</h2>
+                    <p>You can use this search bar to search for tweets. You can use keywords or hashtags (#).</p>
+                </li>
+                <li data-id="tabNames" data-button="Next" data-options="tipLocation:bottom; tipAnimation: fade;">
+                    <h2>View Results</h2>
+                    <p>You can view your results here. Sentitweet has a table view, a map view and a timeline view.</p>
+                </li>
+                <li data-id="collapsibleFilterSection" data-button="Next" data-options="tipLocation:bottom; tipAnimation: fade;">
+                    <h2>Filter Results</h2>
+                    <p>Want to see only the positive results from your search? You can do that and more here in the filter section.</p>
+                </li>
+                <li data-id="searchForm" data-button="Close" data-options="tipLocation:bottom; tipAnimation: fade;">
+                    <h2>Ready to go?</h2>
+                    <p>That's all there is to Sentitweet!<br />Why not give a try now? You could search for "coffee" for example :)</p>
+                </li>
+            </ol>
+
             <script>
-                $(document).ready(function() {
-                    $('#tweetsTable').DataTable({
-                        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+                    $(window).load(function () {
+                        $('#introContent').joyride({
+                            autoStart: true,
+                            modal: true,
+                            expose: true
+                        });
                     });
-                } );
-            </script>
 
-            <div class="col s2 pull-s10" id="filterSection">
-                <ul class="tabs blue darken-1">
-                    <li class="tab col s2"><a class="active" href="#filter">Filter</a></li>
-                </ul>
-                <div id="filter" class="col s12">
-                    <form action="">
-                        <span><b><u>Filter Search Results</u></b></span>
-                        <p>
-                            <input class="with-gap" name="sentiment" type="radio" value="positive" id="positiveRadioBtn" />
-                            <label for="positiveRadioBtn" style="color:#00E64D;">Positive</label>
-                        </p>
-                        <p>
-                            <input class="with-gap" name="sentiment" type="radio" value="negative" id="negativeRadioBtn" />
-                            <label for="negativeRadioBtn" style="color:#FD7567;">Negative</label>
-                        </p>
-                        <p>
-                            <input class="with-gap" name="sentiment" type="radio" value="neutral"  id="neutralRadioBtn"  />
-                            <label for="neutralRadioBtn" style="color:#6991FD;">Neutral</label>
-                        </p>
-                    </form>
-                </div>
-            </div>
+                    $("#valuesRange").ionRangeSlider({
+                        grid: true,
+                        from: 3,
+                        values: [25, 50, 75, 100, 200, 300]
+                    });
 
-            <script>
-                $("input[name='sentiment']").change(function(e){
-                    if($(this).val() == 'positive') {
-                       @* @routes.Application.filterResults("positive"); *@
-                    } else if($(this).val() == 'neutral') {
-                        window.alert("neutral filtering occurs");
-                    } else if($(this).val() == 'negative') {
-                        window.alert("negative filtering occurs");
+                    function disableBtns () {
+                        $('#advancedSearchBtn').attr('disabled', 'disabled');
+                        $('#filterBtn').attr('disabled', 'disabled');
                     }
-                });
             </script>
-        </div>
-        <div id="deleteBtnDiv">
-            <form action="@routes.Application.clearResults()">
-                <button class="btn waves-effect waves-light" id="clearResultsBtn" type="submit" name="action">
-                    Clear Results
-                    <i class="material-icons right">delete</i>
-                </button>
-            </form>
         </div>
     </main>
-
-    <footer class="page-footer blue darken-1">
-        <div class="footer-copyright">
-            <div class="container">
-                &copy; 2016 Jake Sweeney
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        window.onload = function() {
-            console.log("In the onload function");
-            var tweetSize = @tweets.size;
-
-            var clearResultsButton = document.getElementById("clearResultsBtn");
-            var tweetsContent = document.getElementById("tweets");
-            var mapTabContent = document.getElementById("mapTab");
-            var timelineContent = document.getElementById("timeline");
-            var filterContent = document.getElementById("filter");
-
-            if(tweetSize > 0) {
-                clearResultsButton.style.visibility = "visible";
-                timelineContent.style.visibility = "visible";
-                tweetsContent.style.visibility = "visible";
-                mapTabContent.style.visibility = "visible";
-                filterContent.style.visibility = "visible";
-
-            } else {
-                clearResultsButton.style.visibility = "hidden";
-                timelineContent.style.visibility = "hidden";
-                tweetsContent.style.visibility = "hidden";
-                mapTabContent.style.visibility = "hidden";
-                filterContent.style.visibility = "hidden";
-            }
-        }
-    </script>
 }

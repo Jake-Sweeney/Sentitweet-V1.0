@@ -64,18 +64,11 @@ function createBarChart(tweets, filteredData, filterTopic) {
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
 
-        //.selectAll("text")
-        //    .style("text-anchor", "end")
-        //    .attr("x", "2")
-        //    .attr("dx", ".71em")
-        //    .attr("transform", "rotate(-45)");
-
     chart.append("text")
         .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
         .style("font-weight", "bold")
         .style("text-anchor", "middle")
         .text("Senitment");
-
 
     chart.append("g")
         .attr("class", "y axis")
@@ -102,18 +95,24 @@ function createBarChart(tweets, filteredData, filterTopic) {
                 return "rgb(105,145,253)";
             }
         })
+        .on("mouseover", tip.show)
+        .on("mouseout", tip.hide)
         .attr("class", "bar")
+        .attr("width", x.rangeBand())
         .attr("x", function (d) {
             return x(d.sentiment);
         })
-        //.attr("transform", "rotate(-45)")
-        .attr("width", x.rangeBand())
+        .attr("y", height)
+        .attr("height", 0)
+        .transition()
+        .delay(function(d, i) {
+            return i * 5000;
+        })
         .attr("y", function (d) {
             return y(d.value);
         })
         .attr("height", function (d, i) {
             return height - y(d.value);
-        })
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
+        });
+
 }

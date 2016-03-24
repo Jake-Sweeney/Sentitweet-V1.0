@@ -23,8 +23,8 @@ libraryDependencies ++= Seq(
   "org.twitter4j" % "twitter4j-media-support" % "4.0.4",
   "com.typesafe.play" %% "anorm" % "2.4.0",
   "mysql" % "mysql-connector-java" % "5.1.21",
-  "com.datumbox" % "datumbox-framework" % "0.6.1",
   "edu.stanford.nlp" % "stanford-corenlp" % "3.5.2" artifacts (Artifact("stanford-corenlp", "models"), Artifact("stanford-corenlp")),
+  "org.apache.spark" %% "spark-core" % "1.3.0",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 )
 

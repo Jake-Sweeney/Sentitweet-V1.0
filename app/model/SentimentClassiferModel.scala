@@ -47,9 +47,13 @@ object SentimentClassiferModel {
     val annotation: Annotation = pipeline.process(text)
     val sentences = annotation.get(classOf[CoreAnnotations.SentencesAnnotation])
     sentences
-      .map(sentence => (sentence, sentence.get(classOf[SentimentCoreAnnotations.SentimentAnnotatedTree])))
+      .map(sentence => {
+        (sentence, sentence.get(classOf[SentimentCoreAnnotations.SentimentAnnotatedTree]))
+      })
       .map {
-        case (sentence, tree) => (sentence.toString, Sentiment.toSentiment(RNNCoreAnnotations.getPredictedClass(tree)))
+        case (sentence, tree) => {
+          (sentence.toString, Sentiment.toSentiment(RNNCoreAnnotations.getPredictedClass(tree)))
+        }
       }
       .toList
   }
@@ -58,12 +62,13 @@ object SentimentClassiferModel {
     var positiveCount = 0
     var negativeCount = 0
     var neutralCount = 0
+    println("Values of Senitment Count")
     for(tweet <- tweets) {
       println(tweet.sentiment)
       tweet.sentiment match {
         case "POSITIVE" => positiveCount += 1
-        case "NEGATIVE" => negativeCount += 1
         case "NEUTRAL" => neutralCount += 1
+        case "NEGATIVE" => negativeCount += 1
         case _ => println("No match found")
       }
     }
@@ -73,12 +78,12 @@ object SentimentClassiferModel {
         "value" -> positiveCount
       ),
       Json.obj(
-        "sentiment" -> "negative",
-        "value" -> negativeCount
-      ),
-      Json.obj(
         "sentiment" -> "neutral",
         "value" -> neutralCount
+      ),
+      Json.obj(
+        "sentiment" -> "negative",
+        "value" -> negativeCount
       )
     )
     Json.stringify(sentimentTotalsAsJson)
