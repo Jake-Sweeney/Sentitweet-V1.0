@@ -3,9 +3,20 @@ var map;
 var numberOfResults = 0;
 var jsonTweets = [];
 var numberOfGeolocatedTweets = 0;
+var markers = [];
 
-function initializeData(jsonTweetsSet) {
-    jsonTweets = jsonTweetsSet;
+function initializeMapData(jsonTweetsSet, selectedFilter) {
+    if(selectedFilter == "none") {
+        jsonTweets = jsonTweetsSet;
+    } else {
+        for(var i = 0; i < jsonTweetsSet.length; i++) {
+            console.log("ME " + jsonTweetsSet[i].sentiment);
+            if(jsonTweetsSet[i].sentiment.toUpperCase() == selectedFilter.toUpperCase()) {
+                jsonTweets.push(jsonTweetsSet[i]);
+            }
+        }
+    }
+
 }
 
 function initialize() {
@@ -18,8 +29,8 @@ function initialize() {
     map = new google.maps.Map(document.getElementById("googleMap"), mapProperties);
     map.setOptions({ minZoom: 1, maxZoom: 20 });
     createMarkers();
-    appendResultText();
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(numberOfGeolocatedTweets);
+    //appendResultText();
+    //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(numberOfGeolocatedTweets);
 }
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -27,11 +38,12 @@ function createMarkers() {
     var redCounter = 0;
     var blueCounter = 0;
     var greenCounter = 0;
+
     for(var i = 0; i< jsonTweets.length; i++) {
         numberOfResults++;
 
-        //console.log(jsonTweets[i]);
         var tweet = jsonTweets[i];
+        console.log(tweet.sentiment);
         if(tweet.sentiment == "POSITIVE") {
             markerIcon = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
             greenCounter++;
@@ -44,9 +56,7 @@ function createMarkers() {
         }
 
         var lng =  tweet.tweetGeolocation.lng;
-
         var lat = tweet.tweetGeolocation.lat;
-        console.log(tweet.tweetGeolocation.lng + ", " + tweet.tweetGeolocation.lat);
 
         if(lng != 0 && lat != 0) {
             numberOfGeolocatedTweets++;
@@ -55,9 +65,9 @@ function createMarkers() {
                 map: map,
                 icon: markerIcon
             });
-            var content = "<p>" + tweet.username + "<br />" + tweet.text + "<br />"
-                + tweet.sentiment + "</p>";
+            markers.push(marker);
 
+            var content = "<p>" + tweet.username + "<br />" + tweet.text + "<br />" + tweet.sentiment + "</p>";
             var infoWindow = new google.maps.InfoWindow();
 
             google.maps.event.addListener(marker, 'click',(function(marker,content,infoWindow) {
@@ -66,21 +76,33 @@ function createMarkers() {
                     infoWindow.open(map, marker);
                 };
             })(marker,content,infoWindow));
+
         }
     }
     console.log("Number of red markers: " + redCounter);
     console.log("Number of green markers: " + greenCounter);
     console.log("Number of blue markers: " + blueCounter);
-
-    //var resultsCounter = document.getElementById("numberOfGeolocatedTweetsText");
-    //resultsCounter.innerHTML += "Number of Gelocated Tweets (" + numberOfGeolocatedTweets + ")"
+    console.log("Number of Geolocated Tweets: " + numberOfGeolocatedTweets);
+    console.log("Markers.length " + markers.length);
 }
 
-function appendResultText() {
-    var numberofGeolocatedTweetsText = document.getElementById("geolocatedTweetsAmountText");
-    numberofGeolocatedTweetsText.innerHTML += "(" + numberOfGeolocatedTweets + ")";
+function clearMarkers() {
+    jsonTweets = null;
+    console.log("clear markers called");
+    if(markers.length > 0) {
+        for(var i=0; i < markers.length; i++) {
+            console.log(markers[i]);
+            markers[i].setMap(null);
+            markers[i] = null;
+        }
+    }
+}
 
-}
-function getRandomGeolocation(from, to, numberOfDecimalPlaces) {
-    return (Math.random() * (to - from) + from).toFixed(numberOfDecimalPlaces) * 1;
-}
+//function appendResultText() {
+//    var numberofGeolocatedTweetsText = document.getElementById("geolocatedTweetsAmountText");
+//    numberofGeolocatedTweetsText.innerHTML += "(" + numberOfGeolocatedTweets + ")";
+//
+//}
+//function getRandomGeolocation(from, to, numberOfDecimalPlaces) {
+//    return (Math.random() * (to - from) + from).toFixed(numberOfDecimalPlaces) * 1;
+//}

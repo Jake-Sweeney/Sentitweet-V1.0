@@ -1,0 +1,110 @@
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background: #ffffff url("/assets/images/clouds_background.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    text-align: center;
+}
+
+#aboutSentitweetSpeechBubble {
+    float: right;
+    color: white;
+}
+
+#aboutSentitweetSpeechBubble.bubble
+{
+    position: relative;
+    width: 600px;
+    height: 185px;
+    padding: 4px;
+    background: #298FFF;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: #BDBCFF solid 2px;
+}
+
+#aboutSentitweetSpeechBubbl.bubble:after
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 22px 0 22px 39px;
+    border-color: transparent #298FFF;
+    display: block;
+    width: 0;
+    z-index: 1;
+    right: -39px;
+    top: 136px;
+}
+
+#aboutSentitweetSpeechBubble.bubble:before
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 23px 0 23px 40px;
+    border-color: transparent #BDBCFF;
+    display: block;
+    width: 0;
+    z-index: 0;
+    right: -42px;
+    top: 135px;
+}
+
+#aboutSentimentAnalysisBubble {
+    color: #FFFFFF;
+    float: left;
+}
+#aboutSentimentAnalysisBubble.bubble
+{
+    position: relative;
+    width: 600px;
+    height: 185px;
+    padding: 6px;
+    background: #2967FF;
+    -webkit-border-radius: 21px;
+    -moz-border-radius: 21px;
+    border-radius: 21px;
+    border: #BDBCFF solid 2px;
+}
+
+#aboutSentimentAnalysisBubble.bubble:after
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 34px 39px 34px 0;
+    border-color: transparent #2967FF;
+    display: block;
+    width: 0;
+    z-index: 1;
+    margin-top: -34px;
+    left: -39px;
+    top: 72%;
+}
+
+#aboutSentimentAnalysisBubble.bubble:before
+{
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 35px 40px 35px 0;
+    border-color: transparent #BDBCFF;
+    display: block;
+    width: 0;
+    z-index: 0;
+    margin-top: -35px;
+    left: -42px;
+    top: 72%;
+}

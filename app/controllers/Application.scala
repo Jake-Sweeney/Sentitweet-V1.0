@@ -16,33 +16,55 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
   val searchForm = Form("userQuery" -> nonEmptyText)
   val filterForm = Form("sentiment" -> nonEmptyText)
   val advancedSearchForm = Form(mapping(
-    "verified" -> boolean, "resultType" -> nonEmptyText, "maxNumResults" -> nonEmptyText, "randomGeolocations" -> boolean, "advancedUserQuery" -> nonEmptyText)
-  (AdvancedSearch.apply)(AdvancedSearch.unapply))
+    "verified" -> boolean, "resultType" -> nonEmptyText, "maxNumResults" -> nonEmptyText, "randomGeolocations" -> boolean)
+  (AdvancedSearchSettings.apply)(AdvancedSearchSettings.unapply))
+  val sampleDataForm = Form("sampleDataFileName" -> nonEmptyText)
 
   var userSearchQuery = ""
-  var selectedFilter = ""
   var isVerified = ""
   var resultType = ""
   var maxNumberOfResults = ""
   var geolocations = ""
+  var selectedFilter = "none"
 
   def index() = listResults()
 
   def listResults() = Action {
-    Ok(views.html.index(QueryController.getResults, searchForm, userSearchQuery, getTweetsAsJson(QueryController.getResults), getTweetSentimentCountAsJson(QueryController.getResults)))
+    Ok(views.html.index(QueryController.getResults, searchForm, userSearchQuery, getTweetsAsJson(QueryController.getResults), getTweetSentimentCountAsJson(QueryController.getResults), selectedFilter))
   }
 
   def queryUserSearch() = Action { implicit request =>
     QueryController.clearResults
-    QueryController.resetDefaultValues()
+    selectedFilter = "none"
     println("User Search button clicked")
     searchForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(QueryController.getResults, errors, userSearchQuery, "", "")),
+      errors => BadRequest(views.html.index(QueryController.getResults, errors, userSearchQuery, "", "", selectedFilter)),
       userQuery => {
         userSearchQuery = userQuery
+        println("SEARCH SETTINGS")
+        println("randomGeo " + QueryController.randomGeolocatedTweets)
+        println("verified " + QueryController.onlyVerifiedTweets)
+        println("searchType " + QueryController.searchType)
+        println("maxNumTweets " + QueryController.querySize)
+        println("search term  " + userSearchQuery)
         QueryController.searchForTweets(userQuery)
-        calculateSentimentOfTweets(QueryController.getResults)
-        Redirect(routes.Application.listResults())
+        if(QueryController.getResults.nonEmpty) {
+          calculateSentimentOfTweets(QueryController.getResults)
+          for(status <- QueryController.getResults) {
+            println(status.id + ":;:" +
+              status.username + ":;:" +
+              status.profileImageUrl + ":;:" +
+              status.date + ":;:" +
+              status.text + ":;:" +
+              status.favouriteCount + ":;:" +
+              status.retweetCount + ":;:" +
+              status.sentiment + ":;:" +
+              status.longitude + ":;:" +
+              status.latitude)
+          }
+          Redirect(routes.Application.listResults())
+        } else
+          Redirect(routes.Application.listResults())
       }
     )
   }
@@ -57,13 +79,8 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
   }
 
   def getTweetsAsJson(tweets: List[Tweet]): String = {
-    val tweetsAsJson = Json.stringify(Json.toJson(QueryController.getResults.toSeq))
+    val tweetsAsJson = Json.stringify(Json.toJson(tweets.toSeq))
     tweetsAsJson
-  }
-
-  def clearResults() = Action {
-    QueryController.clearResults
-    Redirect(routes.Application.index())
   }
 
   def saveSearchResults() = Action { implicit request =>
@@ -79,34 +96,39 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
     val tweets = QueryController.getResults
     val dataFilter = new DataFilter(tweets)
     var filteredTweets = List[Tweet]()
+    selectedFilter = "none"
     filterForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.index(QueryController.getResults, errors, userSearchQuery, "", "")),
+      errors => BadRequest(views.html.index(QueryController.getResults, errors, userSearchQuery, "", "", selectedFilter)),
       sentiment => {
         println("Sentiment: " + sentiment)
         selectedFilter = sentiment
         if(sentiment == "positive") {
           filteredTweets = dataFilter.onlyPositiveTweets()
+          selectedFilter = "positive"
         } else if(sentiment == "negative") {
           filteredTweets = dataFilter.onlyNegativeTweets()
+          selectedFilter = "negative"
         } else if(sentiment == "neutral") {
           filteredTweets = dataFilter.onlyNeutralTweets()
+          selectedFilter = "neutral"
         } else {
           filteredTweets = tweets
+          selectedFilter = "none"
         }
       }
     )
     println("Selected Filter: " + selectedFilter)
-    val filteredTweetsAsJson = getTweetsAsJson(filteredTweets)
-    val filteredTweetsSentimentCount = getTweetSentimentCountAsJson(filteredTweets)
-    Ok(views.html.index(filteredTweets, searchForm, userSearchQuery, filteredTweetsAsJson, filteredTweetsSentimentCount))
+    val filteredTweetsAsJson = getTweetsAsJson(QueryController.getResults)
+    val filteredTweetsSentimentCount = getTweetSentimentCountAsJson(QueryController.getResults)
+    Ok(views.html.index(filteredTweets, searchForm, userSearchQuery, filteredTweetsAsJson, filteredTweetsSentimentCount, selectedFilter))
   }
 
-  def queryAdvancedUserSearch() = Action { implicit request =>
-    println("Advanced Search button clicked")
-    QueryController.clearResults
+  def saveAdvancedSearchSettings() = Action { implicit request =>
+    println("Advanced Search Settings button clicked")
+    selectedFilter = "none"
     val advancedSearchData = advancedSearchForm.bindFromRequest
     advancedSearchData.fold(
-      errors => BadRequest(views.html.index(QueryController.getResults, null, userSearchQuery, "", "")),
+      errors => BadRequest(views.html.index(QueryController.getResults, null, userSearchQuery, "", "",selectedFilter)),
       validData => {
         if (!validData.verified) {
           QueryController.setOnlyVerifiedTweets(false)
@@ -130,8 +152,6 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
         } else if (validData.randomGeolocations) {
           QueryController.setRandomGeolocatedTweets(true)
         }
-
-        userSearchQuery = validData.userSearchTerm
       }
     )
 
@@ -140,17 +160,28 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
     println("searchType " + QueryController.searchType)
     println("maxNumTweets " + QueryController.querySize)
     println("search term  " + userSearchQuery)
-
-    QueryController.searchForTweets(userSearchQuery)
-    calculateSentimentOfTweets(QueryController.getResults)
     Redirect(routes.Application.listResults())
   }
 
   def loadSampleData() = Action { implicit request =>
-    val sampleDataLoader = new SampleDataLoader
-    val tweets = sampleDataLoader.loadData()
-    //wont need to calculate the sentiment in future, just for these particular sets of results.
-    calculateSentimentOfTweets(tweets)
-    Ok(views.html.index(tweets, searchForm, userSearchQuery, getTweetsAsJson(tweets), getTweetSentimentCountAsJson(tweets)))
+    sampleDataForm.bindFromRequest.fold(
+      errors =>   BadRequest(views.html.index(QueryController.getResults, errors, userSearchQuery, "", "", selectedFilter)),
+      sampleDataFileName => {
+        val sampleDataLoader = new SampleDataLoader(sampleDataFileName)
+        val tweets: List[Tweet] = sampleDataLoader.loadData()
+        QueryController.clearResults
+        QueryController.setResults(tweets)
+        Ok(views.html.index(tweets, searchForm, userSearchQuery, getTweetsAsJson(tweets), getTweetSentimentCountAsJson(tweets), selectedFilter))
+      }
+    )
+  }
+
+  def loadAboutPage() = Action {
+    Ok(views.html.about())
+  }
+
+  def resetSearchSettings() =  Action { implicit request =>
+    QueryController.resetDefaultValues()
+    Redirect(routes.Application.listResults())
   }
 }

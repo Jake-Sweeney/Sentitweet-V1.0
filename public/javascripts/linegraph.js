@@ -18,8 +18,8 @@ function createLineGraph(tweets, senitmentCount, topic) {
             d.sentiment = -1;
         else
             d.sentiment = 0;
-        console.log(d.date);
-        console.log(d.sentiment);
+        //console.log(d.date);
+        //console.log(d.sentiment);
     });
 
     tweets.sort(function (a, b) {
@@ -125,9 +125,25 @@ function createLineGraph(tweets, senitmentCount, topic) {
                 document.getElementById("collectionContent").style.backgroundColor = "rgba(105,145,253,0.8)";
             }
             document.getElementById("userProfileForStatusBar").src = d.profileImageURL;
-            document.getElementById("statusUsername").innerHTML = "User: <b>" + d.username + "</b> Date: <b>" + d.date + "</b>";
+            document.getElementById("statusUsername").innerHTML = "User: <b>" + d.username;
             document.getElementById("statusText").innerHTML = d.text;
         });
+
+    var gradient = lineGraph.append("defs")
+        .append("linearGradient")
+        .attr("id", "gradient")
+        .attr("x2", "0%")
+        .attr("y2", "100%");
+
+    gradient.append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#9CE7F4")
+        .attr("stop-opacity", 1);
+
+    gradient.append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#25C1ED")
+        .attr("stop-opacity", 1);
 
     var curtain = lineGraph.append('rect')
         .attr('x', -1 * width)
@@ -136,11 +152,11 @@ function createLineGraph(tweets, senitmentCount, topic) {
         .attr('width', width)
         .attr('class', 'curtain')
         .attr('transform', 'rotate(180)')
-        .style('fill', '#ffffff')
+        .style("fill", "url(#gradient)");
 
     var guideline = lineGraph.append('line')
         .attr('stroke', '#333')
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 0.5)
         .attr('class', 'guide')
         .attr('x1', 1)
         .attr('y1', 1)
@@ -148,7 +164,7 @@ function createLineGraph(tweets, senitmentCount, topic) {
         .attr('y2', height)
 
     var t = lineGraph.transition()
-        .delay(5000)
+        .delay(1000)
         .duration(transitionDuration)
         .ease('linear')
         .each('end', function() {
@@ -191,8 +207,9 @@ function createLineGraph(tweets, senitmentCount, topic) {
         html: true,
         title: function() {
             var d = this.__data__;
-            var date = d.date.toString().split(" ");
-            return date[1] + " " + date[2] + " " + date[3] + " " + date[4];
+            //var date = d.date.toString().split(" ");
+            //return date[1] + " " + date[2] + " " + date[3] + " " + date[4];
+            return 'Date: ' + d.date;
         }
     });
 

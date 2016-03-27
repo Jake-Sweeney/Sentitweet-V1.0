@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 object QueryController extends TwitterInstance {
 
   var querySize = 100
-  var numberOfQueries = 5
+  var numberOfQueries = 1
   var onlyVerifiedTweets = false
   var randomGeolocatedTweets = false
   var searchType = "recent"
@@ -79,7 +79,9 @@ object QueryController extends TwitterInstance {
 
   def addTweet(status: Status) = {
     if(randomGeolocatedTweets) {
+      println("RANDOM GEO")
       val (longitude, latitude) = generateARandomGeolocation
+      println((longitude, latitude))
       tweets += new Tweet(
         status.getId,
         status.getUser.getScreenName,
@@ -103,13 +105,13 @@ object QueryController extends TwitterInstance {
           status.getFavoriteCount,
           status.getRetweetCount
         )
-        println(status.getId + ":;:" +
-          status.getUser.getScreenName + ":;:" +
-          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
-          status.getCreatedAt.toString + ":;:" +
-          status.getText + ":;:" +
-          status.getFavoriteCount + ":;:" +
-          status.getRetweetCount)
+//        println(status.getId + ":;:" +
+//          status.getUser.getScreenName + ":;:" +
+//          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
+//          status.getCreatedAt.toString + ":;:" +
+//          status.getText + ":;:" +
+//          status.getFavoriteCount + ":;:" +
+//          status.getRetweetCount)
       } else {
         tweets += new Tweet(
           status.getId,
@@ -123,21 +125,37 @@ object QueryController extends TwitterInstance {
           status.getGeoLocation.getLongitude,
           status.getGeoLocation.getLatitude
         )
-        println(status.getId + ":;:" +
-          status.getUser.getScreenName + ":;:" +
-          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
-          status.getCreatedAt.toString + ":;:" +
-          status.getText + ":;:" +
-          status.getFavoriteCount + ":;:" +
-          status.getRetweetCount + ":;:" +
-          "" + ":;:" +
-          status.getGeoLocation.getLongitude + ":;:" +
-          status.getGeoLocation.getLatitude)
+//        println(status.getId + ":;:" +
+//          status.getUser.getScreenName + ":;:" +
+//          status.getUser.getBiggerProfileImageURLHttps + ":;:" +
+//          status.getCreatedAt.toString + ":;:" +
+//          status.getText + ":;:" +
+//          status.getFavoriteCount + ":;:" +
+//          status.getRetweetCount + ":;:" +
+//          "" + ":;:" +
+//          status.getGeoLocation.getLongitude + ":;:" +
+//          status.getGeoLocation.getLatitude)
       }
     }
   }
 
   def getResults: List[Tweet] = tweets.toList
+
+  def setResults(sampleTweets: List[Tweet]) = {
+    for(status <- sampleTweets) {
+      tweets += new Tweet(
+          status.id,
+          status.username,
+          status.profileImageUrl,
+          status.date,
+          status.text,
+          status.favouriteCount,
+          status.retweetCount,
+          status.sentiment,
+          status.longitude,
+          status.latitude)
+    }
+  }
 
   def clearResults = tweets.clear
 

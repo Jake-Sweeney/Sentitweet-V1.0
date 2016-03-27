@@ -46,7 +46,7 @@ div#loading_gif {
 }
 
 .tabs .indicator {
-    background-color: #FBBE0B;
+    background-color: #FFFFFF;
 }
 
 .rainbow {
@@ -89,7 +89,7 @@ path {
 /*}*/
 
 .data-point {
-    stroke: steelblue;
+    stroke: #000000;
     stroke-width: 1;
 }
 
@@ -220,6 +220,10 @@ input#advanced_search_bar {
     color: #000000;
 }
 
+span.irs-bar {
+    color: #00E64D;
+}
+
 #userProfileImage {
     display: block;
     margin-left: auto;
@@ -251,4 +255,29 @@ input.form-control.input-sm {
 
 li.pagination:hover {
     background-color: #1E88E5;
+}
+
+#search_bar {
+    background-color: #FFFFFF;
+    width: 300px;
+    padding-right: 25px;
+}
+
+#search_bar_icon {
+    color: #000000;
+}
+
+#loadSampleResultsBtn {
+    margin: 15px;
+}
+
+#resetSearchSettingsBtn {
+     margin-top: 15px;
+}
+#advancedSearchBtnsFieldset {
+    border: 0;
+}
+
+#refreshSearchBtn {
+    margin-top: 5%;
 }

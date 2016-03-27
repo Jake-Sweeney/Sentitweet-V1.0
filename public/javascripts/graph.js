@@ -1,9 +1,7 @@
-function createBarChart(tweets, filteredData, filterTopic) {
+function createBarChart(tweets, sentimentCounts, selectedFilter, filterTopic) {
     /**
      * This margin variable is used for scaling the overall chart.
      */
-    jsonTweets = tweets;
-
     var margin = {top: 40, right: 50, bottom: 65, left: 60},
         width = 300 - margin.left - margin.right,
         height = 300 - margin.top - margin.bottom;
@@ -47,15 +45,30 @@ function createBarChart(tweets, filteredData, filterTopic) {
      */
     chart.call(tip);
 
-    var sentimentCategories = [];
-    for(var i =0; i < filteredData.length; i++) {
-        sentimentCategories.push(filteredData[i].sentiment);
+    var sentiments =  [];
+
+    if(selectedFilter != "none") {
+        for(var i =0; i < sentimentCounts.length; i++) {
+            if(sentimentCounts[i].sentiment == selectedFilter) {
+                var entry = {};
+                entry["sentiment"] = sentimentCounts[i].sentiment;
+                entry["value"] = sentimentCounts[i].value;
+                sentiments.push(entry);
+            }
+        }
+    } else {
+        for(var i =0; i < sentimentCounts.length; i++) {
+            var entry = {};
+            entry["sentiment"] = sentimentCounts[i].sentiment;
+            entry["value"] = sentimentCounts[i].value;
+            sentiments.push(entry);
+        }
     }
 
-    x.domain(filteredData.map(function (d) {
+    x.domain(sentiments.map(function (d) {
         return d.sentiment;
     }));
-    y.domain([0, d3.max(filteredData, function (d) {
+    y.domain([0, d3.max(sentiments, function (d) {
         return d.value;
     })]);
 
@@ -84,7 +97,7 @@ function createBarChart(tweets, filteredData, filterTopic) {
         .text("Amount of Tweets");
 
     chart.selectAll(".bar")
-        .data(filteredData)
+        .data(sentiments)
         .enter().append("rect")
         .attr("fill", function(d, i) {
             if(d.sentiment == "positive") {
@@ -106,7 +119,7 @@ function createBarChart(tweets, filteredData, filterTopic) {
         .attr("height", 0)
         .transition()
         .delay(function(d, i) {
-            return i * 5000;
+            return (i+1) * 1000;
         })
         .attr("y", function (d) {
             return y(d.value);
@@ -114,5 +127,4 @@ function createBarChart(tweets, filteredData, filterTopic) {
         .attr("height", function (d, i) {
             return height - y(d.value);
         });
-
 }

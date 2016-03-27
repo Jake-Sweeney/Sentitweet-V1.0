@@ -25,7 +25,6 @@ object SentimentClassiferModel {
   def classifyTweetSentiment(tweets: List[Tweet]): List[Tweet] = {
     val tweetsWithSentiment = for(tweet <- tweets) yield {
       val sentiment = mainSentiment(TweetCleaner.cleanText(tweet.text))
-      println(tweet.text)
       tweet.sentiment = sentiment.toString
       tweet
     }

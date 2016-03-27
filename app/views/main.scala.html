@@ -48,40 +48,47 @@
             window.addEventListener("load", function(){
                 $.LoadingOverlay("hide");
             });
-
-            function showLoadingScreen() {
-                var loadingScreenMessages = [
-                    "Please Wait", "Gathering Tweets", "Calculating Sentiment of Results",
-                    "Aquiring the Deathly Hallows", "Searching for Dobby", "Dobby?!",
-                    "DOOOOOOOOOBBY??","Oh wait ...", ":(", "X("];
-                var currentMessage = "";
-                var index = 0;
-
-                var customElement = $("<div>", {
-                    id: "loadingScreenText",
-                    css : {
-                        "font-size": "50px",
-                        "margin-top": "10%"
-                    },
-                    text : currentMessage
-                });
-
-                $.LoadingOverlay("show", {
-                    image: "@routes.Assets.versioned("javascripts/libs/jquery-loading-overlay-master/src/loading.gif")",
-                    custom: customElement
-                });
-
-                setInterval(function() {
-                    customElement.text(loadingScreenMessages[index]);
-                    if(index >= loadingScreenMessages.length) {
-                        index = 0;
-                    }
-                    index++;
-                }, 3000);
-
-            }
         </script>
         @content
+        <script>
+                function showLoadingScreen() {
+                    disableBtns();
+
+                    var loadingScreenMessages = [
+                        "Please Wait", "Gathering Tweets",
+                        "Calculating Sentiment of Results",
+                        "Aquiring the Deathly Hallows",
+                        "Searching for Dobby",
+                        "On the look out for Dementors",
+                        "Hey look it's Batman!",
+                        "No wait it's just Bruce Wayne"];
+
+                    var currentMessage = "";
+                    var index = 0;
+
+                    var customElement = $("<div>", {
+                        id: "loadingScreenText",
+                        css : {
+                            "font-size": "50px",
+                            "margin-top": "10%"
+                        },
+                        text : currentMessage
+                    });
+
+                    $.LoadingOverlay("show", {
+                        image: "@routes.Assets.versioned("javascripts/libs/jquery-loading-overlay-master/src/loading.gif")",
+                        custom: customElement
+                    });
+
+                    setInterval(function() {
+                        customElement.text(loadingScreenMessages[index]);
+                        if(index >= loadingScreenMessages.length) {
+                            index = 0;
+                        }
+                        index++;
+                    }, 3000);
+                }
+        </script>
     </body>
     <footer class="page-footer blue darken-1">
         <div class="footer-copyright">
