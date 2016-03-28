@@ -171,7 +171,9 @@ class Application @Inject() (val messagesApi : MessagesApi) extends Controller w
         val tweets: List[Tweet] = sampleDataLoader.loadData()
         QueryController.clearResults
         QueryController.setResults(tweets)
-        Ok(views.html.index(tweets, searchForm, userSearchQuery, getTweetsAsJson(tweets), getTweetSentimentCountAsJson(tweets), selectedFilter))
+        var searchValue = sampleDataFileName.replace(".txt", "")
+        searchValue = searchValue.replace("SampleData_", "")
+        Ok(views.html.index(tweets, searchForm, searchValue, getTweetsAsJson(tweets), getTweetSentimentCountAsJson(tweets), selectedFilter))
       }
     )
   }

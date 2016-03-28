@@ -10,7 +10,6 @@ function initializeMapData(jsonTweetsSet, selectedFilter) {
         jsonTweets = jsonTweetsSet;
     } else {
         for(var i = 0; i < jsonTweetsSet.length; i++) {
-            console.log("ME " + jsonTweetsSet[i].sentiment);
             if(jsonTweetsSet[i].sentiment.toUpperCase() == selectedFilter.toUpperCase()) {
                 jsonTweets.push(jsonTweetsSet[i]);
             }
@@ -29,8 +28,6 @@ function initialize() {
     map = new google.maps.Map(document.getElementById("googleMap"), mapProperties);
     map.setOptions({ minZoom: 1, maxZoom: 20 });
     createMarkers();
-    //appendResultText();
-    //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(numberOfGeolocatedTweets);
 }
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -43,7 +40,6 @@ function createMarkers() {
         numberOfResults++;
 
         var tweet = jsonTweets[i];
-        console.log(tweet.sentiment);
         if(tweet.sentiment == "POSITIVE") {
             markerIcon = new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/icons/green-dot.png");
             greenCounter++;
@@ -97,12 +93,3 @@ function clearMarkers() {
         }
     }
 }
-
-//function appendResultText() {
-//    var numberofGeolocatedTweetsText = document.getElementById("geolocatedTweetsAmountText");
-//    numberofGeolocatedTweetsText.innerHTML += "(" + numberOfGeolocatedTweets + ")";
-//
-//}
-//function getRandomGeolocation(from, to, numberOfDecimalPlaces) {
-//    return (Math.random() * (to - from) + from).toFixed(numberOfDecimalPlaces) * 1;
-//}

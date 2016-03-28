@@ -16,95 +16,28 @@ footer {
     text-align: center;
 }
 
-#aboutSentitweetSpeechBubble {
-    float: right;
-    color: white;
+h4 {
+    padding: 0;
+    margin-bottom: 2px;
 }
 
-#aboutSentitweetSpeechBubble.bubble
-{
-    position: relative;
-    width: 600px;
-    height: 185px;
-    padding: 4px;
-    background: #298FFF;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    border: #BDBCFF solid 2px;
+.materialboxed {
+    overflow: none;
 }
 
-#aboutSentitweetSpeechBubbl.bubble:after
-{
-    content: '';
-    position: absolute;
-    border-style: solid;
-    border-width: 22px 0 22px 39px;
-    border-color: transparent #298FFF;
-    display: block;
-    width: 0;
-    z-index: 1;
-    right: -39px;
-    top: 136px;
+.card-panel {
+    border: 5px solid #FFFFFF;
 }
 
-#aboutSentitweetSpeechBubble.bubble:before
-{
-    content: '';
-    position: absolute;
-    border-style: solid;
-    border-width: 23px 0 23px 40px;
-    border-color: transparent #BDBCFF;
-    display: block;
-    width: 0;
-    z-index: 0;
-    right: -42px;
-    top: 135px;
+table {
+    border-collapse: collapse;
+    border-spacing: 1px;
 }
 
-#aboutSentimentAnalysisBubble {
-    color: #FFFFFF;
-    float: left;
-}
-#aboutSentimentAnalysisBubble.bubble
-{
-    position: relative;
-    width: 600px;
-    height: 185px;
-    padding: 6px;
-    background: #2967FF;
-    -webkit-border-radius: 21px;
-    -moz-border-radius: 21px;
-    border-radius: 21px;
-    border: #BDBCFF solid 2px;
+td {
+    text-align: center;
 }
 
-#aboutSentimentAnalysisBubble.bubble:after
-{
-    content: '';
-    position: absolute;
-    border-style: solid;
-    border-width: 34px 39px 34px 0;
-    border-color: transparent #2967FF;
-    display: block;
-    width: 0;
-    z-index: 1;
-    margin-top: -34px;
-    left: -39px;
-    top: 72%;
-}
-
-#aboutSentimentAnalysisBubble.bubble:before
-{
-    content: '';
-    position: absolute;
-    border-style: solid;
-    border-width: 35px 40px 35px 0;
-    border-color: transparent #BDBCFF;
-    display: block;
-    width: 0;
-    z-index: 0;
-    margin-top: -35px;
-    left: -42px;
-    top: 72%;
+#aboutSentitweetPanel {
+    margin-top: 40px;
 }

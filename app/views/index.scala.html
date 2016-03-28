@@ -71,6 +71,26 @@
                 localStorage.setItem('radio_' + this.id, JSON.stringify({checked: this.checked}));
             });
         });
+
+        function clearLocalStorage() {
+            $('input[type=radio]').each(function() {
+                console.log(this.id);
+//                if(this.id != "positiveRadioBtn" || this.id != "negativeRadioBtn"
+//                        || this.id != "neutralRadioBtn" || this.id != "noneRadioBtn"
+//                        || this.id != "allVerifiedBtn" || this.id != "notAllVerifiedBtn"
+//                        || this.id != "recentResultsBtn" || this.id != "mixedResultsBtn"
+//                        || this.id != "popularResultsBtn" || this.id != "allRandomGeolocationsBtn"
+//                        || this.id != "noRandomGeolocationsBtn") {
+//                    console.log("In the if with: " + this.id);
+//                    localStorage.removeItem(this.id);
+//                }
+                var curItem = this.id.toString();
+                if(curItem.indexOf("yesFeedbackbtn") !=-1) {
+                    println("HEEEEEELLO");
+                    localStorage.removeItem(this.id);
+                }
+            });
+        }
     </script>
 
     <ol id="introContent">
@@ -177,15 +197,14 @@
                                                 <td>@tweet.date</td>
                                                 <td>@tweet.sentiment</td>
                                                 <td>@tweet.text <br/>
-                                                    <script>console.log("positiveShowInTwitterBtn@index"); </script>
                                                     <input id="positiveShowInTwitterBtn@index" type="button" value="View Tweet" class="btn waves-effect waves-light" onclick="window.open('https://twitter.com/@tweet.username/status/@tweet.id')"/>
                                                 </td>
                                                 <td>
                                                     <fieldset>
                                                         <legend>Accurate?</legend>
-                                                        <input class="with-gap" name="feedbackOptionsPos@index" type="radio" id="yesFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsPos@index" type="radio" id="yesFeedbackbtn@index" checked="checked"/>
                                                         <label for="yesFeedbackbtn@index" style="color: #000000;">Yes</label>
-                                                        <input class="with-gap" name="feedbackOptionsPos@index" type="radio" id="noFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsPos@index" type="radio" id="noFeedbackbtn@index"/>
                                                         <label for="noFeedbackbtn@index" style="color: #000000;">No</label>
                                                     </fieldset>
                                                     <button class="btn waves-effect waves-light" id="posFeedbackSubmitBtn@index">Submit</button>
@@ -203,9 +222,9 @@
                                                 <td>
                                                     <fieldset>
                                                         <legend>Accurate?</legend>
-                                                        <input class="with-gap" name="feedbackOptionsNeg@index" type="radio" id="yesFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsNeg@index" type="radio" id="yesFeedbackbtn@index" checked="checked"/>
                                                         <label for="yesFeedbackbtn@index" style="color: #000000;">Yes</label>
-                                                        <input class="with-gap" name="feedbackOptionsNeg@index" type="radio" id="noFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsNeg@index" type="radio" id="noFeedbackbtn@index" />
                                                         <label for="noFeedbackbtn@index" style="color: #000000;">No</label>
                                                     </fieldset>
                                                     <button class="btn waves-effect waves-light" id="negFeedbackSubmitBtn@index">Submit</button>
@@ -223,9 +242,9 @@
                                                 <td>
                                                     <fieldset>
                                                         <legend>Accurate?</legend>
-                                                        <input class="with-gap" name="feedbackOptionsNeu@index" type="radio" id="yesFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsNeu@index" type="radio" id="yesFeedbackbtn@index" checked="checked"/>
                                                         <label for="yesFeedbackbtn@index" style="color: #000000;">Yes</label>
-                                                        <input class="with-gap" name="feedbackOptionsNeu@index" type="radio" id="noFeedbackbtn@index" autocomplete="off"/>
+                                                        <input class="with-gap" name="feedbackOptionsNeu@index" type="radio" id="noFeedbackbtn@index"/>
                                                         <label for="noFeedbackbtn@index" style="color: #000000;">No</label>
                                                     </fieldset>
                                                     <button class="btn waves-effect waves-light" id="neuFeedbackSubmitBtn@index">Submit</button>
@@ -262,10 +281,6 @@
                             var loaded = false;
 
                             function loadMapTab() {
-                                console.log(@tweets.size);
-                                @for(tweet <- tweets) {
-                                    console.log("@tweet.sentiment");
-                                }
                                 initializeMapData(@Html(tweetsAsJson), "@selectedFilter");
                                 createBarChart(@Html(tweetsAsJson), @Html(sentimentCountAsJson), "@selectedFilter", "Sentiment");
                                 initialize();
@@ -486,6 +501,9 @@ RANDOM: Gives tweets a random geolocation."
                     document.getElementById("filterBtn").disabled = true;
 
                     @for((tweet, index) <- tweets.zipWithIndex) {
+                        console.log("positiveShowInTwitterBtn@index");
+                        console.log("negativeShowInTwitterBtn@index");
+                        console.log("neutralShowInTwitterBtn@index");
                         if(document.getElementById("positiveShowInTwitterBtn@index") != null) document.getElementById("positiveShowInTwitterBtn@index").disabled = true;
                         if(document.getElementById("negativeShowInTwitterBtn@index") != null) document.getElementById("negativeShowInTwitterBtn@index").disabled = true;
                         if(document.getElementById("neutralShowInTwitterBtn@index") != null) document.getElementById("neutralShowInTwitterBtn@index").disabled = true;

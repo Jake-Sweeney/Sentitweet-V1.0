@@ -2,7 +2,7 @@ function createLineGraph(tweets, senitmentCount, topic) {
 
     var width = 900;
     var height = 400;
-    var margin = {top: 20, right: 10, bottom: 40, left: 20};
+    var margin = {top: 20, right: 10, bottom: 40, left: 40};
     var transitionDuration = 5000;
 
 
@@ -56,6 +56,42 @@ function createLineGraph(tweets, senitmentCount, topic) {
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
+
+    lineGraph.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -43)
+        .attr("x", 20 - height)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .style("fill", "#FD7567")
+        .text("Negative");
+
+    lineGraph.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -43)
+        .attr("x",0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .style("fill", "#6991FD")
+        .text("Neutral");
+
+    lineGraph.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -43)
+        .attr("x", -20)
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .style("font-weight", "bold")
+        .style("fill", "#00E64D")
+        .text("Positive");
+
+    lineGraph.append("text")
+        .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+        .style("font-weight", "bold")
+        .style("text-anchor", "middle")
+        .text("Time");
 
     var dataLinesGroup = lineGraph.append("svg:g");
 
@@ -205,12 +241,6 @@ function createLineGraph(tweets, senitmentCount, topic) {
     $("svg circle").tipsy({
         gravity: "w",
         html: true,
-        title: function() {
-            var d = this.__data__;
-            //var date = d.date.toString().split(" ");
-            //return date[1] + " " + date[2] + " " + date[3] + " " + date[4];
-            return 'Date: ' + d.date;
-        }
     });
 
 
