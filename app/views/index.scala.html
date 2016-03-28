@@ -1,7 +1,7 @@
 @import model.Tweet
 @(tweets: List[Tweet], searchForm: Form[String], userQuery: String, tweetsAsJson: String, sentimentCountAsJson: String, selectedFilter: String)(implicit messages: Messages)
 
-@main("SentiTweet") {
+@main("Sentitweet") {
     <script>
         window.onload = function() {
             console.log("In the onload function");
@@ -72,25 +72,6 @@
             });
         });
 
-        function clearLocalStorage() {
-            $('input[type=radio]').each(function() {
-                console.log(this.id);
-//                if(this.id != "positiveRadioBtn" || this.id != "negativeRadioBtn"
-//                        || this.id != "neutralRadioBtn" || this.id != "noneRadioBtn"
-//                        || this.id != "allVerifiedBtn" || this.id != "notAllVerifiedBtn"
-//                        || this.id != "recentResultsBtn" || this.id != "mixedResultsBtn"
-//                        || this.id != "popularResultsBtn" || this.id != "allRandomGeolocationsBtn"
-//                        || this.id != "noRandomGeolocationsBtn") {
-//                    console.log("In the if with: " + this.id);
-//                    localStorage.removeItem(this.id);
-//                }
-                var curItem = this.id.toString();
-                if(curItem.indexOf("yesFeedbackbtn") !=-1) {
-                    println("HEEEEEELLO");
-                    localStorage.removeItem(this.id);
-                }
-            });
-        }
     </script>
 
     <ol id="introContent">
@@ -150,8 +131,13 @@
     </script>
     <main class="container">
         <div id="mainContent">
-            <div id="searchTermDiv">
-                <span id="searchTerm" style="display: none;">Displaying Results for "@userQuery"</span>
+            <div class="row">
+                <div id="searchTermDiv">
+                    @*<form id="refreshSearchForm" action="@routes.Application.queryUserSearch()" method="post" onsubmit="showLoadingScreen()">*@
+                        @*<button class="btn waves-effect waves-light" style="display: none; float:right;" id="refreshSearchBtn" name="userQuery" type="submit" value="@userQuery"><i class="material-icons left">replay</i>Refresh Search</button>*@
+                    @*</form>*@
+                    <span id="searchTerm" style="display: none; float:right;">Displaying Results for "@userQuery"</span>
+                </div>
                 <script>
                     var tweetsSize = @tweets.size;
                     var searchTerm = document.getElementById("searchTerm");
@@ -160,6 +146,7 @@
                             searchTerm.innerHTML = "No Results for @userQuery";
                             searchTerm.style.display = "inline";
                     } else if(tweetsSize > 0) {
+//                        document.getElementById("refreshSearchBtn").style.display = "inline";
                         searchTerm.style.display = "inline";
                     } else {
                         searchTerm.style.display = "none";
@@ -382,7 +369,7 @@
                             <li>
                                 <div class="collapsible-header blue darken-1" id="collapsibleAdvancedSearchSection"><i class="material-icons">settings</i>Search Settings &#9661;</div>
                                 <div id="advancedSearchCollapsibleBody" class="collapsible-body">
-                                    <form id="advancedSearchForm" action="@routes.Application.saveAdvancedSearchSettings()" onsubmit="javascript:disableBtns();showLoadingScreen()" method="post">
+                                    <form id="advancedSearchForm" action="@routes.Application.saveAdvancedSearchSettings()" onsubmit="showLoadingScreen()" method="post">
                                         <fieldset>
                                             <legend>Only Verified Tweets <a href=""
                                             title="Verified Tweets are ones that are sent from verified Twitter accounts.
@@ -431,12 +418,12 @@ RANDOM: Gives tweets a random geolocation."
                                 <div class="collapsible-header blue darken-1" id="collapsibleDemoSection"><i class="material-icons">grade</i>Demo &#9661;</div>
                                 <div id="demoSectionCollapsibleBody" class="collapsible-body">
                                     <div id="sampleResultsControl">
-                                        <form id="sampleResultsForm" action="@routes.Application.loadSampleData()">
+                                        <form id="sampleResultsForm" action="@routes.Application.loadSampleData()" onsubmit="showLoadingScreen()">
                                             <fieldset>
                                                 <legend>Load Sample Data</legend>
-                                                <button class="btn waves-effect waves-light" id="loadEasterWeekendBtn" type="submit" name="sampleDataFileName" value="SampleData_EasterWeekend.txt" onsubmit="javascript:showLoadingScreen()">#EasterWeekend</button>
+                                                <button class="btn waves-effect waves-light" id="loadEasterWeekendBtn" type="submit" name="sampleDataFileName" value="SampleData_EasterWeekend.txt">#EasterWeekend</button>
                                                 <br />
-                                                <button class="btn waves-effect waves-light" id="loadNationalPuppyDayBtn" type="submit" name="sampleDataFileName" value="SampleData_NationalPuppyDay.txt" onsubmit="javascript:showLoadingScreen()">#NationalPuppyDay</button>
+                                                <button class="btn waves-effect waves-light" id="loadNationalPuppyDayBtn" type="submit" name="sampleDataFileName" value="SampleData_NationalPuppyDay.txt">#NationalPuppyDay</button>
                                             </fieldset>
                                         </form>
                                         <fieldset>
@@ -447,11 +434,6 @@ RANDOM: Gives tweets a random geolocation."
                                 </div>
                             </li>
                         </ul>
-                    </div>
-                    <div id="refreshSearchDiv">
-                        <form id="refreshSearchForm" action="@routes.Application.queryUserSearch()" method="post">
-                            <button class="btn waves-effect waves-light" id="refreshSearchBtn" name="userQuery" type="submit" value="@userQuery" onsubmit="javascript:showLoadingScreen()">Refresh Search</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -501,9 +483,6 @@ RANDOM: Gives tweets a random geolocation."
                     document.getElementById("filterBtn").disabled = true;
 
                     @for((tweet, index) <- tweets.zipWithIndex) {
-                        console.log("positiveShowInTwitterBtn@index");
-                        console.log("negativeShowInTwitterBtn@index");
-                        console.log("neutralShowInTwitterBtn@index");
                         if(document.getElementById("positiveShowInTwitterBtn@index") != null) document.getElementById("positiveShowInTwitterBtn@index").disabled = true;
                         if(document.getElementById("negativeShowInTwitterBtn@index") != null) document.getElementById("negativeShowInTwitterBtn@index").disabled = true;
                         if(document.getElementById("neutralShowInTwitterBtn@index") != null) document.getElementById("neutralShowInTwitterBtn@index").disabled = true;

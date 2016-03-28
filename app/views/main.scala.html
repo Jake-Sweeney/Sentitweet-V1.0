@@ -53,8 +53,7 @@
         <script>
                 function showLoadingScreen() {
                     disableBtns();
-                    clearLocalStorage();
-
+                    document.getElementById("tweetsTable").style.visibility = "hidden";
                     var loadingScreenMessages = [
                         "Please Wait", "Gathering Tweets",
                         "Calculating Sentiment of Results",
