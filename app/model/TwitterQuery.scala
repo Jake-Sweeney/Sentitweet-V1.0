@@ -1,17 +1,16 @@
-package controllers
+package model
 
-import model.Tweet
-
-import twitter4j.{Status, Query}
+import controllers.TwitterInstance
 import twitter4j.Query.ResultType
+import twitter4j.{Query, Status}
 
-import scala.util.control.Breaks._
 import scala.collection.JavaConversions._
+import scala.util.control.Breaks._
 
 /**
   * Created by Jake on 19/01/2016.
   */
-object QueryController extends TwitterInstance {
+object TwitterQuery extends TwitterInstance {
 
   var querySize = 100
   var numberOfQueries = 1

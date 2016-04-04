@@ -18,8 +18,6 @@ function createLineGraph(tweets, senitmentCount, topic) {
             d.sentiment = -1;
         else
             d.sentiment = 0;
-        //console.log(d.date);
-        //console.log(d.sentiment);
     });
 
     tweets.sort(function (a, b) {
@@ -160,8 +158,9 @@ function createLineGraph(tweets, senitmentCount, topic) {
             } else {
                 document.getElementById("collectionContent").style.backgroundColor = "rgba(105,145,253,0.8)";
             }
+            document.getElementById("statusContainerImageLink").href = "https://twitter.com/" + d.username;
             document.getElementById("userProfileForStatusBar").src = d.profileImageURL;
-            document.getElementById("statusUsername").innerHTML = "User: <b>" + d.username;
+            document.getElementById("statusUsername").innerHTML = "@<b>" + d.username + "</b>";
             document.getElementById("statusText").innerHTML = d.text;
         });
 
@@ -241,6 +240,11 @@ function createLineGraph(tweets, senitmentCount, topic) {
     $("svg circle").tipsy({
         gravity: "w",
         html: true,
+        title: function() {
+            var d = this.__data__;
+            var date = d.date.toString().split(" ");
+            return date[1] + " " + date[2] + " " + date[3] + " " + date[4];
+        }
     });
 
 

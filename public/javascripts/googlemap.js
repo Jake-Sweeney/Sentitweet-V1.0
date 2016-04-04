@@ -82,14 +82,14 @@ function createMarkers() {
     console.log("Markers.length " + markers.length);
 }
 
-function clearMarkers() {
-    jsonTweets = null;
-    console.log("clear markers called");
-    if(markers.length > 0) {
-        for(var i=0; i < markers.length; i++) {
-            console.log(markers[i]);
-            markers[i].setMap(null);
-            markers[i] = null;
-        }
-    }
-}
+//function clearMarkers() {
+//    jsonTweets = null;
+//    console.log("clear markers called");
+//    if(markers.length > 0) {
+//        for(var i=0; i < markers.length; i++) {
+//            console.log(markers[i]);
+//            markers[i].setMap(null);
+//            markers[i] = null;
+//        }
+//    }
+//}

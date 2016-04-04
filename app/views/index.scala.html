@@ -91,6 +91,14 @@
             <h2>Filter Results</h2>
             <p>Want to see only the positive results from your search? You can do that and more here in the filter section.</p>
         </li>
+        <li data-id="collapsibleAdvancedSearchSection" data-button="Next" data-options="tipLocation:bottom; tipAnimation: fade;">
+            <h2>Search Settings</h2>
+            <p>With the advanced search settings you can change how you search for tweets.<br />You can set return only verified tweets or even set the geolocations to be random.<br /> Play around with the settings to find which is the best for you!</p>
+        </li>
+        <li data-id="collapsibleDemoSection" data-button="Next" data-options="tipLocation:bottom; tipAnimation: fade;">
+            <h2>Demo</h2>
+            <p>The Demo section contains sample data and the button to turn me (your friendly tour guide) off.</p>
+        </li>
         <li data-id="searchForm" data-button="Close" data-options="tipLocation:bottom; tipAnimation: fade;">
             <h2>Ready to go?</h2>
             <p>That's all there is to Sentitweet!<br />Why not give a try now? You could search for "coffee" for example :)</p>
@@ -133,20 +141,16 @@
         <div id="mainContent">
             <div class="row">
                 <div id="searchTermDiv">
-                    @*<form id="refreshSearchForm" action="@routes.Application.queryUserSearch()" method="post" onsubmit="showLoadingScreen()">*@
-                        @*<button class="btn waves-effect waves-light" style="display: none; float:right;" id="refreshSearchBtn" name="userQuery" type="submit" value="@userQuery"><i class="material-icons left">replay</i>Refresh Search</button>*@
-                    @*</form>*@
-                    <span id="searchTerm" style="display: none; float:right;">Displaying Results for "@userQuery"</span>
+                    <span id="searchTerm" style="display: none;">Displaying Results for "@userQuery"</span>
                 </div>
                 <script>
                     var tweetsSize = @tweets.size;
                     var searchTerm = document.getElementById("searchTerm");
 
-                    if(tweetsSize == 0 && @userQuery != "") {
+                    if(tweetsSize == 0 && "@userQuery" != "") {
                             searchTerm.innerHTML = "No Results for @userQuery";
                             searchTerm.style.display = "inline";
                     } else if(tweetsSize > 0) {
-//                        document.getElementById("refreshSearchBtn").style.display = "inline";
                         searchTerm.style.display = "inline";
                     } else {
                         searchTerm.style.display = "none";
@@ -263,7 +267,7 @@
                             </table>
                         </div>
                         <div id="barChart"></div>
-                        <button onclick="javascript:clearMarkers()" type="button">Clear Markers</button>
+                        @*<button onclick="javascript:clearMarkers()" type="button">Clear Markers</button>*@
                         <script>
                             var loaded = false;
 
@@ -292,7 +296,7 @@
                         <div id="tweetStatusBar">
                             <ul class="collection" id="statusContainer" style="visibility: hidden;">
                                 <li id="collectionContent" class="collection-item avatar">
-                                    <img alt="" id="userProfileForStatusBar" class="circle">
+                                    <a id="statusContainerImageLink" href=""><img alt="" id="userProfileForStatusBar" class="circle"></a>
                                     <span class="title" id="statusUsername"></span>
                                     <p id="statusText"></p>
                                 </li>
@@ -362,7 +366,7 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        <button class="btn waves-effect waves-light" id="filterBtn" type="submit" name="action" onclick="javascript:clearMarkers()">OK<i class="material-icons left">done</i></button>
+                                        <button class="btn waves-effect waves-light" id="filterBtn" type="submit" name="action">OK<i class="material-icons left">done</i></button>
                                     </form>
                                 </div>
                             </li>
@@ -418,7 +422,7 @@ RANDOM: Gives tweets a random geolocation."
                                 <div class="collapsible-header blue darken-1" id="collapsibleDemoSection"><i class="material-icons">grade</i>Demo &#9661;</div>
                                 <div id="demoSectionCollapsibleBody" class="collapsible-body">
                                     <div id="sampleResultsControl">
-                                        <form id="sampleResultsForm" action="@routes.Application.loadSampleData()" onsubmit="showLoadingScreen()">
+                                        <form id="sampleResultsForm" action="@routes.Application.loadSampleData()">
                                             <fieldset>
                                                 <legend>Load Sample Data</legend>
                                                 <button class="btn waves-effect waves-light" id="loadEasterWeekendBtn" type="submit" name="sampleDataFileName" value="SampleData_EasterWeekend.txt">#EasterWeekend</button>
@@ -472,8 +476,6 @@ RANDOM: Gives tweets a random geolocation."
 
 
                 function disableBtns() {
-                    document.getElementById("refreshSearchBtn").disabled = true;
-
                     document.getElementById("tourToggleBtn").disabled = true;
                     document.getElementById("loadNationalPuppyDayBtn").disabled = true;
                     document.getElementById("loadEasterWeekendBtn").disabled = true;
